@@ -93,7 +93,7 @@ namespace BH.Adapter.AGS
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                Stratum stratum = Convert.FromStratum(sectionText[i], headingIndexes);
+                Stratum stratum = Convert.FromStratum(sectionText[i], headingIndexes, m_blankGeology);
                 if (stratum != null)
                     strata.Add(stratum);
             }

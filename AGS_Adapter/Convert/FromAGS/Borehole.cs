@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Borehole FromBorehole(string text, Dictionary<string,int> headings)
+        public static Borehole FromBorehole(string text, Dictionary<string,int> headings, IEnumerable<Stratum> strata)
         {
             string id = GetValue(text, "LOCA_ID", headings);
             string eastingTop = GetValue(text, "LOCA_NATE", headings);
@@ -47,7 +47,7 @@ namespace BH.Adapter.AGS
             string topLevel = GetValue(text, "LOCA_GL", headings);
             string eastingBot = GetValue(text, "LOCA_ETRV", headings);
             string northingBot = GetValue(text, "LOCA_NTRV", headings);
-            string botLevel = GetValue(text, "LOCA_FDEP", headings);
+            string botDepth = GetValue(text, "LOCA_FDEP", headings);
 
             string eastingTopLocal = "";
             string northingTopLocal = "";
@@ -86,14 +86,17 @@ namespace BH.Adapter.AGS
             {
                 X = double.Parse(eastingBot),
                 Y = double.Parse(northingBot),
-                Z = double.Parse(botLevel)
+                Z = top.Z - double.Parse(botDepth)
             };
+
+            List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
 
             Borehole borehole = new Borehole()
             {
                 Id = id,
                 Top = top,
-                Bottom = bottom
+                Bottom = bottom,
+                Strata = boreholeStrata
             };
 
             return borehole;

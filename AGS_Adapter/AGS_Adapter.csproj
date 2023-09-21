@@ -49,6 +49,9 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="Data_Engine">
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Geometry_Engine.dll</HintPath>
     </Reference>

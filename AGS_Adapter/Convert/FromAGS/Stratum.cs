@@ -38,23 +38,31 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Stratum FromStratum(string text, Dictionary<string,int> headings)
+        public static Stratum FromStratum(string text, Dictionary<string, int> headings, string blankGeology)
         {
+            string id = GetValue(text, "LOCA_ID", headings);
             string top = GetValue(text, "GEOL_TOP", headings);
             string bottom = GetValue(text, "GEOL_BASE", headings);
 
-            if(top == "" || bottom == "")
+            if (top == "" || bottom == "")
             {
-                string id = GetValue(text, "GEOL_TOP", headings);
-                if(id == "")
+                if (id == "")
                     Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) and bottom (GEOL_BASE) value for a strata is not valid as well as the id (LOCA_ID) and has been skipped.");
                 else
-                Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) or bottom (GEOL_BASE) value for {id} is invalid and has been skipped.");
+                    Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) or bottom (GEOL_BASE) value for {id} is invalid and has been skipped.");
                 return null;
             }
 
             string observedGeology = GetValue(text, "GEOL_GEOL", headings);
+            if (observedGeology == "")
+                observedGeology = blankGeology;
+
             string interpretedGeology = GetValue(text, "GEOL_GEO2", headings);
+            string legend = GetValue(text, "GEOL_LEG", headings);
+            if(legend == "")
+                Engine.Base.Compute.RecordWarning($"No legend code provided for {id}.");
+            string description = GetValue(text, "GEOL_DESC", headings);
+
 
             string strataRef = GetValue(text, "GEOL_STAT", headings);
             string lexiconCode = GetValue(text, "GEOL_BGS", headings);
@@ -70,11 +78,14 @@ namespace BH.Adapter.AGS
 
             Stratum strata = new Stratum()
             {
+                Id = id,
                 Top = double.Parse(top),
                 Bottom = double.Parse(bottom),
+                Legend = legend,
+                LogDescription = description,
                 ObservedGeology = observedGeology,
                 InterpretedGeology = interpretedGeology,
-                Properties = new List<IStratumProperty>() {reference}
+                Properties = new List<IStratumProperty>() { reference }
             };
 
             strata.Name = strataRef;

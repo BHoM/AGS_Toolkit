@@ -29,6 +29,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Ground;
+using BH.Engine.Data;
+
 
 namespace BH.Adapter.AGS
 {
@@ -98,11 +100,14 @@ namespace BH.Adapter.AGS
             headingIndexes.Add("LOCA_YTRL", GetHeadingIndex("LOCA_YTRL", split));
             headingIndexes.Add("LOCA_ZTRL", GetHeadingIndex("LOCA_ZTRL", split));
 
+            IEnumerable<Stratum> strata = ReadStrata();
+            //IEnumerable<IGrouping<string,Stratum>> groupedStrata = strata.GroupBy(s => s.Id);
+
             List<Borehole> boreholes = new List<Borehole>();
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes);
+                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes, strata);
                 if (borehole != null)
                     boreholes.Add(borehole);
             }

@@ -73,6 +73,11 @@ namespace BH.Adapter.AGS
                 }
             }
 
+            if(agsConfig.BlankGeology != "")
+            {
+                m_blankGeology = agsConfig.BlankGeology;
+            }
+
         }
 
         /***************************************************/
@@ -92,6 +97,7 @@ namespace BH.Adapter.AGS
         /***************************************************/
 
         private string m_directory;
+        private string m_blankGeology;
 
         /***************************************************/
     }

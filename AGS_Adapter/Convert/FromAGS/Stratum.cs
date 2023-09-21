@@ -20,31 +20,58 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
 using BH.oM.Adapters.AGS;
+using BH.oM.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.Ground;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Adapter.AGS
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        //[Description("Description of the method. Will appear in the UI tooltip.")]
-        //[Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        //[Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        //public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        //{
-        //    // This method will appear in every UI (e.g. Grasshopper) as a component.
-        //    // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-        //    throw new NotImplementedException();
-        //}
+        // Add methods for converting to BHoM from the specific software types. 
+        // Example:
+        public static Stratum FromStratum(string text, Dictionary<string,int> headings)
+        {
+            string top = GetValue(text, "GEOL_TOP", headings);
+            string bottom = GetValue(text, "GEOL_BOT", headings);
+            string observedGeology = GetValue(text, "GEOL_GEOL", headings);
+            string interpretedGeology = GetValue(text, "GEOL_GEO2", headings);
+            string optionalInterpretedGeology = GetValue(text, "GEOL_GEO2", headings);
+
+            string strataRef = GetValue(text, "GEOL_STAT", headings);
+            string lexiconCode = GetValue(text, "GEOL_BGS", headings);
+            string references = GetValue(text, "GEOL_FSET", headings);
+            string remarks = GetValue(text, "GEOL_REF", headings);
+
+
+
+
+            Stratum strata = new Stratum()
+            {
+                Top = double.Parse(top),
+                Bottom = double.Parse(bottom),
+                ObservedGeology = observedGeology,
+                InterpretedGeology = interpretedGeology,
+                OptionalInterpretedGeology = optionalInterpretedGeology,
+                
+
+
+            };
+
+            return strata;
+
+        }
 
         /***************************************************/
 

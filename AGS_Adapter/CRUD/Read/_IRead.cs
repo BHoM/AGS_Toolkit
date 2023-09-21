@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Ground;
 
 namespace BH.Adapter.AGS
 {
@@ -41,6 +42,10 @@ namespace BH.Adapter.AGS
         // It gets called once per each Type.
         protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
         {
+            if (type == typeof(Borehole))
+                return ReadBoreholes(ids as dynamic);
+            if (type == typeof(Stratum))
+                return ReadBoreholes(ids as dynamic);
             // Preferrably, different Create logic for different object types should go in separate methods.
             // We achieve this by using the ICreate method to only dynamically dispatching to *type-specific Create implementations*
             // In other words:

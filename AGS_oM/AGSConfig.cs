@@ -20,34 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using BH.oM.Adapters.AGS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BH.oM.Adapter;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.oM.Adapters.AGS
 {
-    public static partial class Modify
+    public class AGSConfig : ActionConfig
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****            Public Properties              ****/
         /***************************************************/
 
-        //[Description("Description of the method. Will appear in the UI tooltip.")]
-        //[Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        //[Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        //public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        //{
-        //    // This method will appear in every UI (e.g. Grasshopper) as a component.
-        //    // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-        //    throw new NotImplementedException();
-        //}
+        [Description("If blank geology occurs in the GEOL_GEOL columns, assign a geology to replace it e.g. Made ground.")]
+        public virtual string BlankGeology { get; set; }
 
         /***************************************************/
-
     }
 }
+
+
+
 

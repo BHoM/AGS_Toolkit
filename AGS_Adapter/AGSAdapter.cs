@@ -25,9 +25,11 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Adapters.AGS;
 
 namespace BH.Adapter.AGS
 {
@@ -37,32 +39,59 @@ namespace BH.Adapter.AGS
         /**** Constructors                              ****/
         /***************************************************/
 
-        [Description("Adapter for AGS.")]
+        [Description("Adapter for AGS files.")]
         [Output("The created AGS adapter.")]
-        public AGSAdapter()
+        public AGSAdapter(string filePath, AGSConfig agsConfig = null, bool active = false)
         {
-            // The Adapter constructor can be used to configure the Adapter behaviour.
-            // For example:
-            m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateOnly; // Adapter `Push` Action simply calls "Create" method.
-            
-            // See the wiki, the AdapterSettings object and other Adapters to see how it can be configured.
+            if (File.Exists(filePath))
+            {
+                m_directory = GetDirectoryRoot(filePath);
+                string textFiles = m_directory + "\\Text Files";
+                Directory.CreateDirectory(textFiles);
 
-            // If your toolkit needs to define this.AdapterComparers and or this.DependencyTypes,
-            // this constructor has to populate those properties.
-            // See the wiki for more information.
+                List<string> agsFile = File.ReadAllLines(filePath).ToList();
+                List<int> groupHeadings = new List<int>();
+
+                // Determine where the section starts
+                for (int i = 0; i < agsFile.Count; i++)
+                {
+                    string line = agsFile[i];
+                    if (!(line.Length < 5))
+                    {
+                        if (line.Split(',')[0].Contains("\"GROUP\""))
+                            groupHeadings.Add(i);
+                    }
+                }
+
+                // Seperate out the text files
+                for (int i = 0; i < groupHeadings.Count - 1; i++)
+                {
+                    int groupHeading = groupHeadings[i];
+                    List<string> section = agsFile.GetRange(groupHeading, groupHeadings[i + 1] - groupHeading -1);
+                    string sectionHeading = section[0].Split(',')[1].Replace('"', ' ').Trim();
+                    File.WriteAllLines(textFiles + "\\" + sectionHeading + ".txt",section);
+                }
+            }
+
         }
 
-        // You can add any other constructors that take more inputs here. 
+        /***************************************************/
+        /**** Private helper methods                    ****/
+        /***************************************************/
+        private string GetDirectoryRoot(string directory)
+        {
+            List<string> directoryRoot = directory.Split('\\').ToList();
+            directoryRoot.RemoveAt(directoryRoot.Count - 1);
+
+            return String.Join("\\", directoryRoot.ToArray());
+        }
+
 
         /***************************************************/
         /**** Private  Fields                           ****/
         /***************************************************/
 
-        // You can add any private variable that should be in common to any other adapter methods here.
-        // If you need to add some private methods, please consider first what their nature is:
-        // if a method does not need any external call (API call, connection call, etc.)
-        // we place them in the Engine project, and then reference them from the Adapter.
-        // See the wiki for more information.
+        private string m_directory;
 
         /***************************************************/
     }

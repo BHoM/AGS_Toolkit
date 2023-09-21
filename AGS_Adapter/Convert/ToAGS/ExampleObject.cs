@@ -38,11 +38,11 @@ namespace BH.Adapter.AGS
 
         // Add methods for converting from BHoM to the specific software types
         // Example:
-        public static ExampleObject ToAGS(this BHoMObject node)
-        {
-            //Insert code for convertion
-            throw new NotImplementedException();
-        }
+        //public static ExampleObject ToAGS(this BHoMObject node)
+        //{
+        //    //Insert code for convertion
+        //    throw new NotImplementedException();
+        //}
 
         /***************************************************/
     }

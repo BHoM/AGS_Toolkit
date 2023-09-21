@@ -20,34 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using BH.oM.Adapters.AGS;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Adapter.AGS
 {
-    public static partial class Modify
+    public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        //[Description("Description of the method. Will appear in the UI tooltip.")]
-        //[Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        //[Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        //public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
-        //{
-        //    // This method will appear in every UI (e.g. Grasshopper) as a component.
-        //    // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-        //    throw new NotImplementedException();
-        //}
+        private static string GetValue(string text, string heading, Dictionary<string, int> headings)
+        {
+            int index = -1;
+            string value = "";
+
+            // Split using "," because commas can be used in the remarks
+            if (headings.TryGetValue(heading, out index))
+            {
+                value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim(); ;
+            }
+            else
+            {
+                string section = heading.Split('_')[0];
+                Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
+            }
+
+            return value;
+        }
 
         /***************************************************/
 
     }
 }
+
+
 

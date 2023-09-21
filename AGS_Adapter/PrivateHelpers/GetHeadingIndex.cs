@@ -20,31 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
-using BH.oM.Base;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BH.Adapter.AGS
 {
-    public static partial class Convert
+    public partial class AGSAdapter
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
-        public static BHoMObject FromAGS(this ExampleObject node)
+        private int GetHeadingIndex(string heading, List<string> headings)
         {
-            //Insert code for convertion
-            throw new NotImplementedException();
+            int index = headings.IndexOf(heading);
+            if (index == -1)
+            {
+                Engine.Base.Compute.RecordError($"The heading {heading} was not found.");
+                return -1;
+            }
+
+            return index;
         }
 
         /***************************************************/
+
     }
 }
+
+
 

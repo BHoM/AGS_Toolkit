@@ -20,29 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
-namespace BH.oM.Adapters.AGS
+namespace BH.Adapter.AGS
 {
-    [Description("Object description in here. Will appear in the UI tooltip.")]
-    public class ExampleObject : BHoMObject
+    public partial class AGSAdapter
     {
-        // // See examples in the BHoM repo and the wiki to see how we define types.
-        // // Generally, all properties should be public and have public getter and setter.
-        // // BHoM Objects should have orthogonal properties and no behaviour (no methods), as in C# Records (or Python Dataclasses).
-        // // No constructor should be specified. If a specific instantiaton method is needed, we make it as an "Engine/Create" method.
-        // // Objects created with this convention will automatically appear as UI components (e.g. Grasshopper component).
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
 
-        [Description("Property description in here.")]
-        public string SomeStringProperty { get; set; }
+        private List<string> GetSectionText(string section)
+        {
+            string path = m_directory + "\\Text Files\\" + section + ".txt";
+            List<string> sectionText = new List<string>();
 
-        [Description("Property description in here.")]
-        public int SomeNumberProperty { get; set; }
+            if (File.Exists(path))
+            {
+                sectionText = File.ReadAllLines(path).ToList();
+            }
+            return sectionText;
+        }
+
+        /***************************************************/
+
     }
 }
+
+
 

@@ -102,7 +102,9 @@ namespace BH.Adapter.AGS
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                boreholes.Add(Convert.FromBorehole(sectionText[i], headingIndexes));
+                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes);
+                if (borehole != null)
+                    boreholes.Add(borehole);
             }
 
             return boreholes;

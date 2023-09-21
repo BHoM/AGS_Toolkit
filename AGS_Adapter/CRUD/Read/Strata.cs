@@ -37,6 +37,7 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
         private List<Stratum> ReadStrata(List<string> ids = null)
         {
             List<string> sectionText = GetSectionText("GEOL");
@@ -81,8 +82,8 @@ namespace BH.Adapter.AGS
 
             List<string> parameterHeadings = new List<string>()
             {
-                "GEOL_TOP", "GEOL_BASE", "GEOL_DESC", "GEOL_LEG","GEOL_GEOL", "GEOL_GEO2", "GEOL_GEO3",
-                "GEOL_STAT", "GEOL_BGS", "GEOL_FSET", "GEOL_REF"
+                "LOCA_ID","GEOL_TOP", "GEOL_BASE", "GEOL_DESC", "GEOL_LEG","GEOL_GEOL", "GEOL_GEO2",
+                "GEOL_STAT", "GEOL_BGS", "FILE_FSET", "GEOL_REM"
             };
 
             foreach (string parameterHeading in parameterHeadings)
@@ -92,7 +93,9 @@ namespace BH.Adapter.AGS
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                strata.Add(Convert.FromStratum(sectionText[i], headingIndexes));
+                Stratum stratum = Convert.FromStratum(sectionText[i], headingIndexes);
+                if (stratum != null)
+                    strata.Add(stratum);
             }
 
             return strata;

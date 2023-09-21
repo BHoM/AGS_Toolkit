@@ -38,24 +38,35 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
         public static Stratum FromStratum(string text, Dictionary<string,int> headings)
         {
             string top = GetValue(text, "GEOL_TOP", headings);
-            string bottom = GetValue(text, "GEOL_BOT", headings);
+            string bottom = GetValue(text, "GEOL_BASE", headings);
+
+            if(top == "" || bottom == "")
+            {
+                string id = GetValue(text, "GEOL_TOP", headings);
+                if(id == "")
+                    Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) and bottom (GEOL_BASE) value for a strata is not valid as well as the id (LOCA_ID) and has been skipped.");
+                else
+                Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) or bottom (GEOL_BASE) value for {id} is invalid and has been skipped.");
+                return null;
+            }
+
             string observedGeology = GetValue(text, "GEOL_GEOL", headings);
             string interpretedGeology = GetValue(text, "GEOL_GEO2", headings);
-            string optionalInterpretedGeology = GetValue(text, "GEOL_GEO2", headings);
 
             string strataRef = GetValue(text, "GEOL_STAT", headings);
             string lexiconCode = GetValue(text, "GEOL_BGS", headings);
-            string references = GetValue(text, "GEOL_FSET", headings);
-            string remarks = GetValue(text, "GEOL_REF", headings);
+            string references = GetValue(text, "FILE_FSET", headings);
+            string remarks = GetValue(text, "GEOL_REM", headings);
 
-
-
+            StratumReference reference = new StratumReference()
+            {
+                Remarks = remarks,
+                LexiconCode = lexiconCode,
+                Files = references
+            };
 
             Stratum strata = new Stratum()
             {
@@ -63,11 +74,10 @@ namespace BH.Adapter.AGS
                 Bottom = double.Parse(bottom),
                 ObservedGeology = observedGeology,
                 InterpretedGeology = interpretedGeology,
-                OptionalInterpretedGeology = optionalInterpretedGeology,
-                
-
-
+                Properties = new List<IStratumProperty>() {reference}
             };
+
+            strata.Name = strataRef;
 
             return strata;
 

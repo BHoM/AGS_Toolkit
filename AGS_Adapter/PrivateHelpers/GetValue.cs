@@ -41,7 +41,13 @@ namespace BH.Adapter.AGS
             // Split using "," because commas can be used in the remarks
             if (headings.TryGetValue(heading, out index))
             {
-                value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim(); ;
+                if (index == -1)
+                {
+                    string section = heading.Split('_')[0];
+                    Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
+                }
+                else
+                    value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim(); ;
             }
             else
             {

@@ -45,7 +45,7 @@ namespace BH.Adapter.AGS
             if (type == typeof(Borehole))
                 return ReadBoreholes(ids as dynamic);
             if (type == typeof(Stratum))
-                return ReadBoreholes(ids as dynamic);
+                return ReadStrata(ids as dynamic);
             // Preferrably, different Create logic for different object types should go in separate methods.
             // We achieve this by using the ICreate method to only dynamically dispatching to *type-specific Create implementations*
             // In other words:

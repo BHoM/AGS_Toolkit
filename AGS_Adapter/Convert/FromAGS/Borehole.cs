@@ -39,8 +39,6 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
         public static Borehole FromBorehole(string text, Dictionary<string,int> headings)
         {
             string id = GetValue(text, "LOCA_ID", headings);

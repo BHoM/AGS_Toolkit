@@ -91,13 +91,43 @@ namespace BH.Adapter.AGS
 
             List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
 
-            Borehole borehole = new Borehole()
-            {
-                Id = id,
-                Top = top,
-                Bottom = bottom,
-                Strata = boreholeStrata
-            };
+            List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
+
+            // Methodology
+            string type = GetValue(text, "LOCA_TYPE", headings);
+            string status = GetValue(text, "LOCA_STAT", headings);
+            string remarks = GetValue(text, "LOCA_REM", headings);
+            string purpose = GetValue(text, "LOCA_PURP", headings);
+            string termination = GetValue(text, "LOCA_TERM", headings);
+
+            Methodology methodology = Engine.Ground.Create.Methodology(type, status, remarks, purpose, termination);
+            if (methodology != null)
+                boreholeProperties.Add(methodology);
+
+            // Location
+            string method = GetValue(text, "LOCA_LOCM", headings);
+            string subDivision = GetValue(text, "LOCA_LOCA", headings);
+            string phase = GetValue(text, "LOCA_CLST", headings);
+            string alignment = GetValue(text, "LOCA_ALID", headings);
+            string offset = GetValue(text, "LOCA_OFFS", headings);
+            string chainage = GetValue(text, "LOCA_CNGE", headings);
+            string algorithim = GetValue(text, "LOCA_TRAN", headings);
+
+            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, double.Parse(offset), chainage, algorithim);
+            if (location != null)
+                boreholeProperties.Add(location);
+
+            // BoreholeReference
+            string file = GetValue(text, "FILE_FSET", headings);
+            string originalId = GetValue(text, "LOCA_ORID", headings);
+            string originalReference = GetValue(text, "LOCA_ORJO", headings);
+            string originalCompany = GetValue(text, "LOCA_ORCO", headings);
+
+            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(file, originalId, originalReference, originalCompany);
+            if (boreholeReference != null)
+                boreholeProperties.Add(boreholeReference);
+
+            Borehole borehole = Engine.Ground.Create.Borehole(id, top, bottom, boreholeStrata, null, boreholeProperties);
 
             return borehole;
 

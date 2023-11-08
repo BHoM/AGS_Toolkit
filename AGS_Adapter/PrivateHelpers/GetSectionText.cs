@@ -47,7 +47,7 @@ namespace BH.Adapter.AGS
             if (m_headings.Last() == section)
                 sectionText = m_ags.GetRange(headingIndex, m_ags.Count - headingIndex);
             else
-                sectionText = m_ags.GetRange(headingIndex, m_headingIndexes[localIndex + 1] - headingIndex);
+                sectionText = m_ags.GetRange(headingIndex, m_headingIndexes[localIndex + 1] - headingIndex - 1);
 
             return sectionText;
         }

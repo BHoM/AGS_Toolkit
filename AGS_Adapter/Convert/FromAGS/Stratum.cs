@@ -20,15 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
 using BH.oM.Ground;
 
 namespace BH.Adapter.AGS
@@ -42,7 +38,14 @@ namespace BH.Adapter.AGS
         {
             string id = GetValue(text, "LOCA_ID", headings);
             string top = GetValue(text, "GEOL_TOP", headings);
+            double topValue;
+            if (!double.TryParse(top, out topValue))
+                topValue = 0;
+
             string bottom = GetValue(text, "GEOL_BASE", headings);
+            double botValue;
+            if (!double.TryParse(bottom, out botValue))
+                botValue = 0;
 
             if (top == "" || bottom == "")
             {
@@ -63,30 +66,18 @@ namespace BH.Adapter.AGS
                 Engine.Base.Compute.RecordWarning($"No legend code provided for {id}.");
             string description = GetValue(text, "GEOL_DESC", headings);
 
+            List<IStratumProperty> stratumProperties = new List<IStratumProperty>();
 
             string strataRef = GetValue(text, "GEOL_STAT", headings);
             string lexiconCode = GetValue(text, "GEOL_BGS", headings);
             string references = GetValue(text, "FILE_FSET", headings);
             string remarks = GetValue(text, "GEOL_REM", headings);
 
-            StratumReference reference = new StratumReference()
-            {
-                Remarks = remarks,
-                LexiconCode = lexiconCode,
-                Files = references
-            };
+            StratumReference reference = Engine.Ground.Create.StratumReference(remarks, lexiconCode, strataRef, references);
+            if (reference != null)
+                stratumProperties.Add(reference);
 
-            Stratum strata = new Stratum()
-            {
-                Id = id,
-                Top = double.Parse(top),
-                Bottom = double.Parse(bottom),
-                Legend = legend,
-                LogDescription = description,
-                ObservedGeology = observedGeology,
-                InterpretedGeology = interpretedGeology,
-                Properties = new List<IStratumProperty>() { reference }
-            };
+            Stratum strata = Engine.Ground.Create.Stratum(id, topValue, botValue, description, legend, observedGeology, interpretedGeology, "" , blankGeology, stratumProperties);
 
             strata.Name = strataRef;
 

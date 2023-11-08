@@ -35,6 +35,9 @@ namespace BH.Adapter.AGS
 
         private static string GetValue(string text, string heading, Dictionary<string, int> headings)
         {
+            if (text == "")
+                return "";
+
             int index = -1;
             string value = "";
 

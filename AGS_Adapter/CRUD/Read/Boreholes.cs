@@ -94,11 +94,13 @@ namespace BH.Adapter.AGS
             // Strata returns empty Borehole with structured strata or a temporary List<id>, remove ID from Stratum
             IEnumerable<Stratum> strata = ReadStrata();
 
+            IEnumerable<ContaminantSample> contaminantSamples = ReadContaminantSamples();
+
             List<Borehole> boreholes = new List<Borehole>();
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes, strata);
+                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes, strata, contaminantSamples);
                 if (borehole != null)
                     boreholes.Add(borehole);
             }

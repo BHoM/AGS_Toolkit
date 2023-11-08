@@ -67,10 +67,14 @@ namespace BH.Adapter.AGS
             string reference = GetValue(text, "SAMP_REF", headings);
             string specId = GetValue(text, "SAMP_ID", headings);
             string receiptDate = GetValue(text, "ERES_RDAT", headings);
+            DateTime receiptDateValue;
+            if (!DateTime.TryParse(receiptDate, out receiptDateValue))
+                receiptDateValue = default(DateTime);
+
             string batchCode = GetValue(text, "ERES_SGRP", headings);
             string files = GetValue(text, "FILE_FSET", headings);
 
-            ContaminantReference contaminantReference = Engine.Ground.Create.ContaminantReference(reference, specId, DateTime.Parse(receiptDate), batchCode, files);
+            ContaminantReference contaminantReference = Engine.Ground.Create.ContaminantReference(reference, specId, receiptDateValue, batchCode, files);
             if (contaminantReference != null)
                 contaminantProperties.Add(contaminantReference);
 
@@ -82,11 +86,15 @@ namespace BH.Adapter.AGS
             string matrix = GetValue(text, "ERES_MATX", headings);
             string method = GetValue(text, "ERES_METH", headings);
             string analysisDate = GetValue(text, "ERES_DTIM", headings);
+            DateTime analysisDateValue;
+            if (!DateTime.TryParse(analysisDate, out analysisDateValue))
+                analysisDateValue = default(DateTime);
+
             string description = GetValue(text, "SPEC_DESC", headings);
             string remarks = GetValue(text, "ERES_REM", headings);
             string testStatus = GetValue(text, "ERES_STAT", headings);
 
-            TestProperties testProperties = Engine.Ground.Create.TestProperties(testName, labTestName, reference,runType, matrix, method, DateTime.Parse(analysisDate), description,
+            TestProperties testProperties = Engine.Ground.Create.TestProperties(testName, labTestName, testReference,runType, matrix, method, analysisDateValue, description,
                 remarks, testStatus);
             if (testProperties != null)
                 contaminantProperties.Add(testProperties);
@@ -96,16 +104,28 @@ namespace BH.Adapter.AGS
             string accreditingBody= GetValue(text, "ERES_CRED", headings);
             string labName = GetValue(text, "ERES_LAB", headings);
             string percentageRemoved = GetValue(text, "ERES_PERP", headings);
+            double percentageRemovedValue;
+            if (!double.TryParse(percentageRemoved, out percentageRemovedValue))
+                percentageRemovedValue = 0;
+
             string sizeRemoved = GetValue(text, "ERES_SIZE", headings);
+            double sizeRemovedValue;
+            if (!double.TryParse(sizeRemoved, out sizeRemovedValue))
+                sizeRemovedValue = 0;
+
             string instrumentReference = GetValue(text, "ERES_IREF", headings);
             string leachateDate = GetValue(text, "ERES_LDTM", headings);
             string leachateMethod = GetValue(text, "ERES_LMTH", headings);
             string diluationFactor = GetValue(text, "ERES_DIL", headings);
+            int dilutionFactorValue;
+            if (!int.TryParse(diluationFactor, out dilutionFactorValue))
+                dilutionFactorValue = 0;
+
             string basis = GetValue(text, "ERES_BAS", headings);
             string location = GetValue(text, "ERES_LOCN", headings);
 
-            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, double.Parse(percentageRemoved), double.Parse(sizeRemoved), instrumentReference, DateTime.Parse(leachateDate),
-                leachateMethod, int.Parse(diluationFactor), basis, location);
+            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, percentageRemovedValue, sizeRemovedValue, instrumentReference, DateTime.Parse(leachateDate),
+                leachateMethod, dilutionFactorValue, basis, location);
             if (analysisProperties != null)
                 contaminantProperties.Add(analysisProperties);
 
@@ -115,7 +135,7 @@ namespace BH.Adapter.AGS
             string detectFlag = GetValue(text, "ERES_DETF", headings);
             string organic = GetValue(text, "ERES_ORG", headings);
 
-            ResultProperties resultProperties = Engine.Ground.Create.ResultProperties(resultType, ParseYNString(reportable), detectFlag, ParseYNString(organic));
+            ResultProperties resultProperties = Engine.Ground.Create.ResultProperties(ParseYNString(organic), ParseYNString(reportable), ParseYNString(detectFlag), type);
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 

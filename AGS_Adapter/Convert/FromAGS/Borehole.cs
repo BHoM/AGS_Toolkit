@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Borehole FromBorehole(string text, Dictionary<string,int> headings, IEnumerable<Stratum> strata)
+        public static Borehole FromBorehole(string text, Dictionary<string,int> headings, IEnumerable<Stratum> strata, IEnumerable<ContaminantSample> contaminantSamples)
         {
             string id = GetValue(text, "LOCA_ID", headings);
             string eastingTop = GetValue(text, "LOCA_NATE", headings);
@@ -90,6 +90,7 @@ namespace BH.Adapter.AGS
             };
 
             List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
+            List<ContaminantSample> boreholeContaminants = contaminantSamples.Where(x => x.Id == id).ToList();
 
             List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
 
@@ -110,24 +111,39 @@ namespace BH.Adapter.AGS
             string phase = GetValue(text, "LOCA_CLST", headings);
             string alignment = GetValue(text, "LOCA_ALID", headings);
             string offset = GetValue(text, "LOCA_OFFS", headings);
+
+            double offsetValue;
+            if (!double.TryParse(offset, out offsetValue))
+                offsetValue = 0;
+
             string chainage = GetValue(text, "LOCA_CNGE", headings);
             string algorithim = GetValue(text, "LOCA_TRAN", headings);
 
-            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, double.Parse(offset), chainage, algorithim);
+            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, offsetValue, chainage, algorithim);
             if (location != null)
                 boreholeProperties.Add(location);
 
             // BoreholeReference
+            string startDate = GetValue(text, "LOCA_STAR", headings);
+            DateTime startDateValue;
+            if (!DateTime.TryParse(startDate, out startDateValue))
+                startDateValue = default(DateTime);
+
+            string endDate = GetValue(text, "LOCA_ENDD", headings);
+            DateTime endDateValue;
+            if (!DateTime.TryParse(endDate, out endDateValue))
+                endDateValue = default(DateTime);
+
             string file = GetValue(text, "FILE_FSET", headings);
             string originalId = GetValue(text, "LOCA_ORID", headings);
             string originalReference = GetValue(text, "LOCA_ORJO", headings);
             string originalCompany = GetValue(text, "LOCA_ORCO", headings);
 
-            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(file, originalId, originalReference, originalCompany);
+            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(startDateValue, endDateValue, file, originalId, originalReference, originalCompany);
             if (boreholeReference != null)
                 boreholeProperties.Add(boreholeReference);
 
-            Borehole borehole = Engine.Ground.Create.Borehole(id, top, bottom, boreholeStrata, null, boreholeProperties);
+            Borehole borehole = Engine.Ground.Create.Borehole(id, top, bottom, null, boreholeProperties, boreholeStrata, boreholeContaminants);
 
             return borehole;
 

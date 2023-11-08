@@ -46,10 +46,8 @@ namespace BH.Adapter.AGS
             if (File.Exists(filePath))
             {
                 m_directory = GetDirectoryRoot(filePath);
-                string textFiles = m_directory + "\\Text Files";
-                Directory.CreateDirectory(textFiles);
 
-                List<string> m_ags = File.ReadAllLines(filePath).ToList();
+                m_ags = File.ReadAllLines(filePath).ToList();
 
                 // Determine where the section starts
                 for (int i = 0; i < m_ags.Count; i++)

@@ -41,7 +41,7 @@ namespace BH.Adapter.AGS
 
         [Description("Adapter for AGS files.")]
         [Output("The created AGS adapter.")]
-        public AGSAdapter(string filePath, AGSConfig agsConfig = null, bool active = false)
+        public AGSAdapter(string filePath, AGSSettings agsSettings = null, bool active = false)
         {
             if (File.Exists(filePath))
             {
@@ -49,33 +49,37 @@ namespace BH.Adapter.AGS
                 string textFiles = m_directory + "\\Text Files";
                 Directory.CreateDirectory(textFiles);
 
-                List<string> agsFile = File.ReadAllLines(filePath).ToList();
-                List<int> groupHeadings = new List<int>();
+                List<string> m_ags = File.ReadAllLines(filePath).ToList();
 
                 // Determine where the section starts
-                for (int i = 0; i < agsFile.Count; i++)
+                for (int i = 0; i < m_ags.Count; i++)
                 {
-                    string line = agsFile[i];
-                    if (!(line.Length < 5))
+                    string line = m_ags[i];
+                    if (!(line.Length < 5) && line.Contains(","))
                     {
-                        if (line.Split(',')[0].Contains("\"GROUP\""))
-                            groupHeadings.Add(i);
+                        List<string> split = line.Split(',').ToList();
+                        if (split[0].Contains("\"GROUP\""))
+                        {
+                            m_headings.Add(split[1].Replace("\"", ""));
+                            m_headingIndexes.Add(i);
+                        }    
+
                     }
                 }
 
                 // Seperate out the text files
-                for (int i = 0; i < groupHeadings.Count - 1; i++)
-                {
-                    int groupHeading = groupHeadings[i];
-                    List<string> section = agsFile.GetRange(groupHeading, groupHeadings[i + 1] - groupHeading -1);
-                    string sectionHeading = section[0].Split(',')[1].Replace('"', ' ').Trim();
-                    File.WriteAllLines(textFiles + "\\" + sectionHeading + ".txt",section);
-                }
+                //for (int i = 0; i < groupHeadings.Count - 1; i++)
+                //{
+                //    int groupHeading = groupHeadings[i];
+                //    List<string> section = agsFile.GetRange(groupHeading, groupHeadings[i + 1] - groupHeading -1);
+                //    string sectionHeading = section[0].Split(',')[1].Replace('"', ' ').Trim();
+                //    File.WriteAllLines(textFiles + "\\" + sectionHeading + ".txt",section);
+                //}
             }
 
-            if(agsConfig.BlankGeology != "")
+            if(agsSettings.BlankGeology != "")
             {
-                m_blankGeology = agsConfig.BlankGeology;
+                m_blankGeology = agsSettings.BlankGeology;
             }
 
         }
@@ -96,8 +100,11 @@ namespace BH.Adapter.AGS
         /**** Private  Fields                           ****/
         /***************************************************/
 
+        private List<string> m_ags;
         private string m_directory;
         private string m_blankGeology;
+        private List<string> m_headings = new List<string>();
+        private List<int> m_headingIndexes = new List<int>();
 
         /***************************************************/
     }

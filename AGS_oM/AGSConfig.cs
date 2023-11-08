@@ -30,7 +30,7 @@ using BH.oM.Adapter;
 
 namespace BH.oM.Adapters.AGS
 {
-    public class AGSConfig : ActionConfig
+    public class AGSSettings : AdapterSettings
     {
         /***************************************************/
         /****            Public Properties              ****/

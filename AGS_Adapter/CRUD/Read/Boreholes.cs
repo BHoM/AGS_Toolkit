@@ -42,6 +42,7 @@ namespace BH.Adapter.AGS
         private List<Borehole> ReadBoreholes(List<string> ids = null)
         {
             List<string> sectionText = GetSectionText("LOCA");
+               
             string heading = "";
             int dataIndex = -1;
 
@@ -100,6 +101,7 @@ namespace BH.Adapter.AGS
             headingIndexes.Add("LOCA_YTRL", GetHeadingIndex("LOCA_YTRL", split));
             headingIndexes.Add("LOCA_ZTRL", GetHeadingIndex("LOCA_ZTRL", split));
 
+            // Strata returns empty Borehole with structured strata or a temporary List<id>, remove ID from Stratum
             IEnumerable<Stratum> strata = ReadStrata();
             //IEnumerable<IGrouping<string,Stratum>> groupedStrata = strata.GroupBy(s => s.Id);
 

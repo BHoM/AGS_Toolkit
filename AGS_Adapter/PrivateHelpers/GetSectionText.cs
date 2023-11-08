@@ -34,13 +34,21 @@ namespace BH.Adapter.AGS
 
         private List<string> GetSectionText(string section)
         {
-            string path = m_directory + "\\Text Files\\" + section + ".txt";
             List<string> sectionText = new List<string>();
 
-            if (File.Exists(path))
+            int localIndex = m_headings.IndexOf(section);
+            if (localIndex == -1)
             {
-                sectionText = File.ReadAllLines(path).ToList();
+                Engine.Base.Compute.RecordError($"{section} not found within AGS file");
+                return null;
             }
+            int headingIndex = m_headingIndexes[localIndex];
+
+            if (m_headings.Last() == section)
+                sectionText = m_ags.GetRange(headingIndex, m_ags.Count - headingIndex);
+            else
+                sectionText = m_ags.GetRange(headingIndex, m_headingIndexes[localIndex + 1] - headingIndex);
+
             return sectionText;
         }
 
@@ -48,6 +56,3 @@ namespace BH.Adapter.AGS
 
     }
 }
-
-
-

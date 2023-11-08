@@ -82,28 +82,35 @@ namespace BH.Adapter.AGS
 
             Dictionary<string, int> headingIndexes = new Dictionary<string, int>();
 
-            // Find index for different parameters
-            headingIndexes.Add("LOCA_ID", GetHeadingIndex("LOCA_ID", split));
-            headingIndexes.Add("LOCA_NATE", GetHeadingIndex("LOCA_NATE", split));
-            headingIndexes.Add("LOCA_NATN", GetHeadingIndex("LOCA_NATN", split));
-            headingIndexes.Add("LOCA_GL", GetHeadingIndex("LOCA_GL", split));
-            headingIndexes.Add("LOCA_ETRV", GetHeadingIndex("LOCA_ETRV", split));
-            headingIndexes.Add("LOCA_NTRV", GetHeadingIndex("LOCA_NTRV", split));
-            headingIndexes.Add("LOCA_FDEP", GetHeadingIndex("LOCA_FDEP", split));
+            List<string> parameterHeadings = new List<string>()
+            {
+                "LOCA_ID", "LOCA_NATE", "LOCA_NATN", "LOCA_GL", "LOCA_ETRV", "LOCA_NTRV", "LOCA_FDEP", "LOCA_LOCX", "LOCA_LOCY", "LOCA_LOCZ", "LOCA_XTRL", "LOCA_YTRL", "LOCA_ZTRL"
+            };
 
-            // If the National Grid coordinates are not given, try getting the local setting out - top
-            headingIndexes.Add("LOCA_LOCX", GetHeadingIndex("LOCA_LOCX", split));
-            headingIndexes.Add("LOCA_LOCY", GetHeadingIndex("LOCA_LOCY", split));
-            headingIndexes.Add("LOCA_LOCZ", GetHeadingIndex("LOCA_LOCZ", split));
+            foreach (string parameterHeading in parameterHeadings)
+                headingIndexes.Add(parameterHeading, GetHeadingIndex(parameterHeading, split));
 
-            // If the National Grid coordinates are not given, try getting the local setting out - bottom
-            headingIndexes.Add("LOCA_XTRL", GetHeadingIndex("LOCA_XTRL", split));
-            headingIndexes.Add("LOCA_YTRL", GetHeadingIndex("LOCA_YTRL", split));
-            headingIndexes.Add("LOCA_ZTRL", GetHeadingIndex("LOCA_ZTRL", split));
+            //// Find index for different parameters
+            //headingIndexes.Add("LOCA_ID", GetHeadingIndex("LOCA_ID", split));
+            //headingIndexes.Add("LOCA_NATE", GetHeadingIndex("LOCA_NATE", split));
+            //headingIndexes.Add("LOCA_NATN", GetHeadingIndex("LOCA_NATN", split));
+            //headingIndexes.Add("LOCA_GL", GetHeadingIndex("LOCA_GL", split));
+            //headingIndexes.Add("LOCA_ETRV", GetHeadingIndex("LOCA_ETRV", split));
+            //headingIndexes.Add("LOCA_NTRV", GetHeadingIndex("LOCA_NTRV", split));
+            //headingIndexes.Add("LOCA_FDEP", GetHeadingIndex("LOCA_FDEP", split));
+
+            //// If the National Grid coordinates are not given, try getting the local setting out - top
+            //headingIndexes.Add("LOCA_LOCX", GetHeadingIndex("LOCA_LOCX", split));
+            //headingIndexes.Add("LOCA_LOCY", GetHeadingIndex("LOCA_LOCY", split));
+            //headingIndexes.Add("LOCA_LOCZ", GetHeadingIndex("LOCA_LOCZ", split));
+
+            //// If the National Grid coordinates are not given, try getting the local setting out - bottom
+            //headingIndexes.Add("LOCA_XTRL", GetHeadingIndex("LOCA_XTRL", split));
+            //headingIndexes.Add("LOCA_YTRL", GetHeadingIndex("LOCA_YTRL", split));
+            //headingIndexes.Add("LOCA_ZTRL", GetHeadingIndex("LOCA_ZTRL", split));
 
             // Strata returns empty Borehole with structured strata or a temporary List<id>, remove ID from Stratum
             IEnumerable<Stratum> strata = ReadStrata();
-            //IEnumerable<IGrouping<string,Stratum>> groupedStrata = strata.GroupBy(s => s.Id);
 
             List<Borehole> boreholes = new List<Borehole>();
 

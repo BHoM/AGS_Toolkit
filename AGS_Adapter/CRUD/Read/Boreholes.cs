@@ -85,7 +85,8 @@ namespace BH.Adapter.AGS
             List<string> parameterHeadings = new List<string>()
             {
                 "LOCA_ID", "LOCA_NATE", "LOCA_NATN", "LOCA_GL", "LOCA_ETRV", "LOCA_NTRV", "LOCA_FDEP", "LOCA_LOCX", "LOCA_LOCY", "LOCA_LOCZ", "LOCA_XTRL", "LOCA_YTRL", "LOCA_ZTRL",
-                "LOCA_TYPE", "LOCA_STAT", "LOCA_REM", "LOCA_LOCM", "LOCA_LOCA", "LOCA_CLST", "LOCA_ALID", "LOCA_OFFS", "LOCA_CNGE", "LOCA_TRAN", "LOCA_FSET", "LOCA_STAR", "LOCA_ENDD"
+                "LOCA_TYPE", "LOCA_STAT", "LOCA_REM", "LOCA_LOCM", "LOCA_LOCA", "LOCA_CLST", "LOCA_ALID", "LOCA_OFFS", "LOCA_CNGE", "LOCA_TRAN", "FILE_FSET", "LOCA_STAR", "LOCA_ENDD", 
+                "LOCA_PURP", "LOCA_TERM", "LOCA_ORID", "LOCA_ORJO", "LOCA_ORCO"
             };
 
             foreach (string parameterHeading in parameterHeadings)

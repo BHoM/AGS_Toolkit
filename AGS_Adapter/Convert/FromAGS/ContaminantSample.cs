@@ -55,11 +55,18 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
+            double topValue;
+            if (!double.TryParse(top, out topValue))
+                topValue = 0;
+
             // ContaminantSample
             string chemical = GetValue(text, "ERES_CODE", headings);
             string name = GetValue(text, "ERES_NAME", headings);
-            string result = GetValue(text, "ERES_RVAL", headings);
             string type = GetValue(text, "SAMP_TYPE", headings);
+            string result = GetValue(text, "ERES_RVAL", headings);
+            double resultValue;
+            if (!double.TryParse(result, out resultValue))
+                resultValue = 0;
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
@@ -92,7 +99,7 @@ namespace BH.Adapter.AGS
 
             string description = GetValue(text, "SPEC_DESC", headings);
             string remarks = GetValue(text, "ERES_REM", headings);
-            string testStatus = GetValue(text, "ERES_STAT", headings);
+            string testStatus = GetValue(text, "TEST_STAT", headings);
 
             TestProperties testProperties = Engine.Ground.Create.TestProperties(testName, labTestName, testReference,runType, matrix, method, analysisDateValue, description,
                 remarks, testStatus);
@@ -115,6 +122,10 @@ namespace BH.Adapter.AGS
 
             string instrumentReference = GetValue(text, "ERES_IREF", headings);
             string leachateDate = GetValue(text, "ERES_LDTM", headings);
+            DateTime leachateValue;
+            if (!DateTime.TryParse(leachateDate, out leachateValue))
+                leachateValue = default(DateTime);
+
             string leachateMethod = GetValue(text, "ERES_LMTH", headings);
             string diluationFactor = GetValue(text, "ERES_DIL", headings);
             int dilutionFactorValue;
@@ -124,8 +135,8 @@ namespace BH.Adapter.AGS
             string basis = GetValue(text, "ERES_BAS", headings);
             string location = GetValue(text, "ERES_LOCN", headings);
 
-            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, percentageRemovedValue, sizeRemovedValue, instrumentReference, DateTime.Parse(leachateDate),
-                leachateMethod, dilutionFactorValue, basis, location);
+            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, percentageRemovedValue, 
+                sizeRemovedValue, instrumentReference, leachateValue, leachateMethod, dilutionFactorValue, basis, location);
             if (analysisProperties != null)
                 contaminantProperties.Add(analysisProperties);
 
@@ -141,17 +152,35 @@ namespace BH.Adapter.AGS
 
             // Detection Properties
             string detectionLimit = GetValue(text, "ERES_RDLM", headings);
-            string methodDetectionLimit = GetValue(text, "ERES_MDLM", headings);
-            string quantificationLimit = GetValue(text, "ERES_QLM", headings);
-            string ticProbability = GetValue(text, "ERES_TICP", headings);
-            string ticRetention = GetValue(text, "ERES_TICT", headings);
+            double detectionLimitValue;
+            if (!double.TryParse(detectionLimit, out detectionLimitValue))
+                detectionLimitValue = 0;
 
-            DetectionProperties detectionProperties = Engine.Ground.Create.DetectionProperties(double.Parse(detectionLimit), double.Parse(methodDetectionLimit), double.Parse(quantificationLimit),
-                double.Parse(ticProbability), double.Parse(ticRetention));
+            string methodDetectionLimit = GetValue(text, "ERES_MDLM", headings);
+            double methodLimitValue;
+            if (!double.TryParse(methodDetectionLimit, out methodLimitValue))
+                methodLimitValue = 0;
+
+            string quantificationLimit = GetValue(text, "ERES_QLM", headings);
+            double quantificationValue;
+            if (!double.TryParse(quantificationLimit, out quantificationValue))
+                quantificationValue = 0;
+
+            string ticProbability = GetValue(text, "ERES_TICP", headings);
+            double ticProbabilityValue;
+            if (!double.TryParse(ticProbability, out ticProbabilityValue))
+                ticProbabilityValue = 0;
+
+            string ticRetention = GetValue(text, "ERES_TICT", headings);
+            double ticRetentionValue;
+            if (!double.TryParse(ticRetention, out ticRetentionValue))
+                ticRetentionValue = 0;
+
+            DetectionProperties detectionProperties = Engine.Ground.Create.DetectionProperties(detectionLimitValue,methodLimitValue, quantificationValue, ticProbabilityValue, ticRetentionValue);
             if (detectionProperties != null)
                 contaminantProperties.Add(detectionProperties);
 
-            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, double.Parse(top), chemical, name, double.Parse(result), type, contaminantProperties);
+            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, topValue, chemical, name, resultValue, type, contaminantProperties);
 
             return contaminantSample;
 

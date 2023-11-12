@@ -37,7 +37,7 @@ namespace BH.Adapter.AGS
             int index = headings.IndexOf(heading);
             if (index == -1)
             {
-                Engine.Base.Compute.RecordError($"The heading {heading} was not found.");
+                Engine.Base.Compute.RecordWarning($"The heading {heading} was not found.");
                 return -1;
             }
 

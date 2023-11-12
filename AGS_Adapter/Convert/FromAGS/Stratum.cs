@@ -34,20 +34,13 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Stratum FromStratum(string text, Dictionary<string, int> headings, string blankGeology)
+        public static Stratum FromStratum(string text, Dictionary<string, int> headings, string blankGeology, Dictionary<string,string> units)
         {
-            string id = GetValue(text, "LOCA_ID", headings);
-            string top = GetValue(text, "GEOL_TOP", headings);
-            double topValue;
-            if (!double.TryParse(top, out topValue))
-                topValue = 0;
+            string id = GetValue<string>(text, "LOCA_ID", headings,units);
+            double top = GetValue<double>(text, "GEOL_TOP", headings,units);
+            double bottom = GetValue<double>(text, "GEOL_BASE", headings,units);
 
-            string bottom = GetValue(text, "GEOL_BASE", headings);
-            double botValue;
-            if (!double.TryParse(bottom, out botValue))
-                botValue = 0;
-
-            if (top == "" || bottom == "")
+            if (double.IsNaN(top) || double.IsNaN(bottom))
             {
                 if (id == "")
                     Engine.Base.Compute.RecordWarning($"The top (GEOL_TOP) and bottom (GEOL_BASE) value for a strata is not valid as well as the id (LOCA_ID) and has been skipped.");
@@ -56,28 +49,28 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
-            string observedGeology = GetValue(text, "GEOL_GEOL", headings);
+            string observedGeology = GetValue<string>(text, "GEOL_GEOL", headings,units);
             if (observedGeology == "")
                 observedGeology = blankGeology;
 
-            string interpretedGeology = GetValue(text, "GEOL_GEO2", headings);
-            string legend = GetValue(text, "GEOL_LEG", headings);
+            string interpretedGeology = GetValue<string>(text, "GEOL_GEO2", headings,units);
+            string legend = GetValue<string>(text, "GEOL_LEG", headings,units);
             if(legend == "")
                 Engine.Base.Compute.RecordWarning($"No legend code provided for {id}.");
-            string description = GetValue(text, "GEOL_DESC", headings);
+            string description = GetValue<string>(text, "GEOL_DESC", headings,units);
 
             List<IStratumProperty> stratumProperties = new List<IStratumProperty>();
 
-            string strataRef = GetValue(text, "GEOL_STAT", headings);
-            string lexiconCode = GetValue(text, "GEOL_BGS", headings);
-            string references = GetValue(text, "FILE_FSET", headings);
-            string remarks = GetValue(text, "GEOL_REM", headings);
+            string strataRef = GetValue<string>(text, "GEOL_STAT", headings,units);
+            string lexiconCode = GetValue<string>(text, "GEOL_BGS", headings,units);
+            string references = GetValue<string>(text, "FILE_FSET", headings,units);
+            string remarks = GetValue<string>(text, "GEOL_REM", headings,units);
 
             StratumReference reference = Engine.Ground.Create.StratumReference(remarks, lexiconCode, strataRef, references);
             if (reference != null)
                 stratumProperties.Add(reference);
 
-            Stratum strata = Engine.Ground.Create.Stratum(id, topValue, botValue, description, legend, observedGeology, interpretedGeology, "" , blankGeology, stratumProperties);
+            Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "" , blankGeology, stratumProperties);
 
             strata.Name = strataRef;
 

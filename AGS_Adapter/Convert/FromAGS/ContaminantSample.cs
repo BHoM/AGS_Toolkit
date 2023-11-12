@@ -38,15 +38,15 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static ContaminantSample FromContaminantSample(string text, Dictionary<string, int> headings)
+        public static ContaminantSample FromContaminantSample(string text, Dictionary<string, int> headings, Dictionary<string, string> units)
         { 
-            string id = GetValue(text, "LOCA_ID", headings);
-            string top = GetValue(text, "SAMP_TOP", headings);
+            string id = GetValue<string>(text, "LOCA_ID", headings,units);
+            double top = GetValue<double>(text, "SAMP_TOP", headings,units);
 
-            if (top == "")
-                top = GetValue(text, "SPEC_DPTH", headings);
+            if (double.IsNaN(top))
+                top = GetValue<double>(text, "SPEC_DPTH", headings,units);
 
-            if (top == "")
+            if (double.IsNaN(top))
             {
                 if (id == "")
                     Engine.Base.Compute.RecordWarning($"The top (SAMP_TOP/SPEC_DPTH) value for the contaminant sample is not valid as well as the id (LOCA_ID) and has been skipped.");
@@ -55,132 +55,84 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
-            double topValue;
-            if (!double.TryParse(top, out topValue))
-                topValue = 0;
-
             // ContaminantSample
-            string chemical = GetValue(text, "ERES_CODE", headings);
-            string name = GetValue(text, "ERES_NAME", headings);
-            string type = GetValue(text, "SAMP_TYPE", headings);
-            string result = GetValue(text, "ERES_RVAL", headings);
-            double resultValue;
-            if (!double.TryParse(result, out resultValue))
-                resultValue = 0;
+            string chemical = GetValue<string>(text, "ERES_CODE", headings,units);
+            string name = GetValue<string>(text, "ERES_NAME", headings,units);
+            string type = GetValue<string>(text, "SAMP_TYPE", headings,units);
+            double result = GetValue<double>(text, "ERES_RVAL", headings,units);
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
             // Contaminant Reference
-            string reference = GetValue(text, "SAMP_REF", headings);
-            string specId = GetValue(text, "SAMP_ID", headings);
-            string receiptDate = GetValue(text, "ERES_RDAT", headings);
-            DateTime receiptDateValue;
-            if (!DateTime.TryParse(receiptDate, out receiptDateValue))
-                receiptDateValue = default(DateTime);
+            string reference = GetValue<string>(text, "SAMP_REF", headings,units);
+            string specId = GetValue<string>(text, "SAMP_ID", headings,units);
+            DateTime receiptDate = GetValue<DateTime>(text, "ERES_RDAT", headings,units);
 
-            string batchCode = GetValue(text, "ERES_SGRP", headings);
-            string files = GetValue(text, "FILE_FSET", headings);
+            string batchCode = GetValue<string>(text, "ERES_SGRP", headings,units);
+            string files = GetValue<string>(text, "FILE_FSET", headings,units);
 
-            ContaminantReference contaminantReference = Engine.Ground.Create.ContaminantReference(reference, specId, receiptDateValue, batchCode, files);
+            ContaminantReference contaminantReference = Engine.Ground.Create.ContaminantReference(reference, specId, receiptDate, batchCode, files);
             if (contaminantReference != null)
                 contaminantProperties.Add(contaminantReference);
 
             // Test Properties
-            string testName = GetValue(text, "ERES_TEST", headings);
-            string labTestName = GetValue(text, "ERES_TNAM", headings);
-            string testReference = GetValue(text, "ERES_TESN", headings);
-            string runType = GetValue(text, "ERES_RTYP", headings);
-            string matrix = GetValue(text, "ERES_MATX", headings);
-            string method = GetValue(text, "ERES_METH", headings);
-            string analysisDate = GetValue(text, "ERES_DTIM", headings);
-            DateTime analysisDateValue;
-            if (!DateTime.TryParse(analysisDate, out analysisDateValue))
-                analysisDateValue = default(DateTime);
+            string testName = GetValue<string>(text, "ERES_TEST", headings,units);
+            string labTestName = GetValue<string>(text, "ERES_TNAM", headings,units);
+            string testReference = GetValue<string>(text, "ERES_TESN", headings,units);
+            string runType = GetValue<string>(text, "ERES_RTYP", headings,units);
+            string matrix = GetValue<string>(text, "ERES_MATX", headings,units);
+            string method = GetValue<string>(text, "ERES_METH", headings,units);
+            DateTime analysisDate = GetValue<DateTime>(text, "ERES_DTIM", headings,units);
 
-            string description = GetValue(text, "SPEC_DESC", headings);
-            string remarks = GetValue(text, "ERES_REM", headings);
-            string testStatus = GetValue(text, "TEST_STAT", headings);
+            string description = GetValue<string>(text, "SPEC_DESC", headings,units);
+            string remarks = GetValue<string>(text, "ERES_REM", headings,units);
+            string testStatus = GetValue<string>(text, "TEST_STAT", headings,units);
 
-            TestProperties testProperties = Engine.Ground.Create.TestProperties(testName, labTestName, testReference,runType, matrix, method, analysisDateValue, description,
+            TestProperties testProperties = Engine.Ground.Create.TestProperties(testName, labTestName, testReference,runType, matrix, method, analysisDate, description,
                 remarks, testStatus);
             if (testProperties != null)
                 contaminantProperties.Add(testProperties);
 
             // Anaysis Properties
-            string totalOrDissolved = GetValue(text, "ERES_TORD", headings);
-            string accreditingBody= GetValue(text, "ERES_CRED", headings);
-            string labName = GetValue(text, "ERES_LAB", headings);
-            string percentageRemoved = GetValue(text, "ERES_PERP", headings);
-            double percentageRemovedValue;
-            if (!double.TryParse(percentageRemoved, out percentageRemovedValue))
-                percentageRemovedValue = 0;
+            string totalOrDissolved = GetValue<string>(text, "ERES_TORD", headings,units);
+            string accreditingBody= GetValue<string>(text, "ERES_CRED", headings,units);
+            string labName = GetValue<string>(text, "ERES_LAB", headings,units);
+            double percentageRemoved = GetValue<double>(text, "ERES_PERP", headings,units);
+            double sizeRemoved = GetValue<double>(text, "ERES_SIZE", headings,units);
+            string instrumentReference = GetValue<string>(text, "ERES_IREF", headings,units);
+            DateTime leachateDate = GetValue<DateTime>(text, "ERES_LDTM", headings,units);
+            string leachateMethod = GetValue<string>(text, "ERES_LMTH", headings,units);
+            int dilutionFactor = GetValue<int>(text, "ERES_DIL", headings,units);
+            string basis = GetValue<string>(text, "ERES_BAS", headings,units);
+            string location = GetValue<string>(text, "ERES_LOCN", headings,units);
 
-            string sizeRemoved = GetValue(text, "ERES_SIZE", headings);
-            double sizeRemovedValue;
-            if (!double.TryParse(sizeRemoved, out sizeRemovedValue))
-                sizeRemovedValue = 0;
-
-            string instrumentReference = GetValue(text, "ERES_IREF", headings);
-            string leachateDate = GetValue(text, "ERES_LDTM", headings);
-            DateTime leachateValue;
-            if (!DateTime.TryParse(leachateDate, out leachateValue))
-                leachateValue = default(DateTime);
-
-            string leachateMethod = GetValue(text, "ERES_LMTH", headings);
-            string diluationFactor = GetValue(text, "ERES_DIL", headings);
-            int dilutionFactorValue;
-            if (!int.TryParse(diluationFactor, out dilutionFactorValue))
-                dilutionFactorValue = 0;
-
-            string basis = GetValue(text, "ERES_BAS", headings);
-            string location = GetValue(text, "ERES_LOCN", headings);
-
-            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, percentageRemovedValue, 
-                sizeRemovedValue, instrumentReference, leachateValue, leachateMethod, dilutionFactorValue, basis, location);
+            AnalysisProperties analysisProperties = Engine.Ground.Create.AnalysisProperties(totalOrDissolved, accreditingBody, labName, percentageRemoved, 
+                sizeRemoved, instrumentReference, leachateDate, leachateMethod, dilutionFactor, basis, location);
             if (analysisProperties != null)
                 contaminantProperties.Add(analysisProperties);
 
             // Result Properties
-            string resultType = GetValue(text, "ERES_RTCD", headings);
-            string reportable = GetValue(text, "ERES_RRES", headings);
-            string detectFlag = GetValue(text, "ERES_DETF", headings);
-            string organic = GetValue(text, "ERES_ORG", headings);
+            string resultType = GetValue<string>(text, "ERES_RTCD", headings,units);
+            bool reportable = GetValue<bool>(text, "ERES_RRES", headings,units);
+            bool detectFlag = GetValue<bool>(text, "ERES_DETF", headings,units);
+            bool organic = GetValue<bool>(text, "ERES_ORG", headings,units);
 
-            ResultProperties resultProperties = Engine.Ground.Create.ResultProperties(ParseYNString(organic), ParseYNString(reportable), ParseYNString(detectFlag), type);
+            ResultProperties resultProperties = Engine.Ground.Create.ResultProperties(organic, reportable, detectFlag, type);
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 
             // Detection Properties
-            string detectionLimit = GetValue(text, "ERES_RDLM", headings);
-            double detectionLimitValue;
-            if (!double.TryParse(detectionLimit, out detectionLimitValue))
-                detectionLimitValue = 0;
+            double detectionLimit = GetValue<double>(text, "ERES_RDLM", headings,units);
+            double methodDetectionLimit = GetValue<double>(text, "ERES_MDLM", headings,units);
+            double quantificationLimit = GetValue<double>(text, "ERES_QLM", headings,units);
+            double ticProbability = GetValue<double>(text, "ERES_TICP", headings,units);
+            double ticRetention = GetValue<double>(text, "ERES_TICT", headings,units);
 
-            string methodDetectionLimit = GetValue(text, "ERES_MDLM", headings);
-            double methodLimitValue;
-            if (!double.TryParse(methodDetectionLimit, out methodLimitValue))
-                methodLimitValue = 0;
-
-            string quantificationLimit = GetValue(text, "ERES_QLM", headings);
-            double quantificationValue;
-            if (!double.TryParse(quantificationLimit, out quantificationValue))
-                quantificationValue = 0;
-
-            string ticProbability = GetValue(text, "ERES_TICP", headings);
-            double ticProbabilityValue;
-            if (!double.TryParse(ticProbability, out ticProbabilityValue))
-                ticProbabilityValue = 0;
-
-            string ticRetention = GetValue(text, "ERES_TICT", headings);
-            double ticRetentionValue;
-            if (!double.TryParse(ticRetention, out ticRetentionValue))
-                ticRetentionValue = 0;
-
-            DetectionProperties detectionProperties = Engine.Ground.Create.DetectionProperties(detectionLimitValue,methodLimitValue, quantificationValue, ticProbabilityValue, ticRetentionValue);
+            DetectionProperties detectionProperties = Engine.Ground.Create.DetectionProperties(detectionLimit,methodDetectionLimit, quantificationLimit, ticProbability, ticRetention);
             if (detectionProperties != null)
                 contaminantProperties.Add(detectionProperties);
 
-            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, topValue, chemical, name, resultValue, type, contaminantProperties);
+            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, top, chemical, name, result, type, contaminantProperties);
 
             return contaminantSample;
 

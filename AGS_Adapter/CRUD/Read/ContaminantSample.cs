@@ -41,6 +41,7 @@ namespace BH.Adapter.AGS
         private List<ContaminantSample> ReadContaminantSamples(List<string> ids = null)
         {
             List<string> sectionText = GetSectionText("ERES");
+            List<string> unit = new List<string>();
             string heading = "";
             int dataIndex = -1;
 
@@ -55,6 +56,8 @@ namespace BH.Adapter.AGS
                     {
                         heading = sectionText[i].Replace("\"", "");
                     }
+                    else if (group.Contains("\"UNIT\""))
+                        unit.AddRange(group.Replace("\"", "").Split(','));
                     else if (group.Contains("\"DATA\""))
                     {
                         dataIndex = i;
@@ -79,6 +82,7 @@ namespace BH.Adapter.AGS
             List<string> split = heading.Split(',').ToList();
 
             Dictionary<string, int> headingIndexes = new Dictionary<string, int>();
+            Dictionary<string, string> units = new Dictionary<string, string>();
 
             List<string> parameterHeadings = new List<string>()
             {
@@ -89,13 +93,17 @@ namespace BH.Adapter.AGS
             };
 
             foreach (string parameterHeading in parameterHeadings)
-                headingIndexes.Add(parameterHeading, GetHeadingIndex(parameterHeading, split));
+            {
+                int index = GetHeadingIndex(parameterHeading, split);
+                headingIndexes.Add(parameterHeading, index);
+                units.Add(parameterHeading, unit[index]);
+            }
 
             List<ContaminantSample> contaminantSamples = new List<ContaminantSample>();
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                ContaminantSample contaminantSample = Convert.FromContaminantSample(sectionText[i], headingIndexes);
+                ContaminantSample contaminantSample = Convert.FromContaminantSample(sectionText[i], headingIndexes, units);
                 if (contaminantSample != null)
                     contaminantSamples.Add(contaminantSample);
             }

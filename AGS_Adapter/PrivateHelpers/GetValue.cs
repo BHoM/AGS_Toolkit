@@ -33,7 +33,7 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static string GetValue(string text, string heading, Dictionary<string, int> headings)
+        private static dynamic GetValue<T>(string text, string heading, Dictionary<string, int> headings, Dictionary<string, string> units)
         {
             if (text == "")
                 return "";
@@ -50,7 +50,10 @@ namespace BH.Adapter.AGS
                     Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
                 }
                 else
-                    value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim(); ;
+                {
+                    value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim();
+
+                }    
             }
             else
             {
@@ -58,7 +61,33 @@ namespace BH.Adapter.AGS
                 Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
             }
 
-            return value;
+            if (typeof(T) == typeof(string))
+            {
+                return value;
+            }
+            else if (typeof(T) == typeof(double))
+            {
+                double number;
+                if (!double.TryParse(value, out number))
+                    number = double.NaN;
+                return number;
+            }
+            else if(typeof(T) == typeof(DateTime))
+            {
+                DateTime date;
+                if (!DateTime.TryParse(value, out date))
+                    date = default(DateTime);
+                return date;
+            }
+            else if(typeof(T) == typeof(bool))
+            {
+                bool boolean = ParseYNString(value);
+                return boolean;
+            }
+            else
+            {
+                return value as object;
+            }
         }
 
         /***************************************************/

@@ -39,54 +39,54 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Borehole FromBorehole(string text, Dictionary<string,int> headings, IEnumerable<Stratum> strata, IEnumerable<ContaminantSample> contaminantSamples)
+        public static Borehole FromBorehole(string text, Dictionary<string,int> headings, Dictionary<string, string> units, IEnumerable<Stratum> strata, 
+            IEnumerable<ContaminantSample> contaminantSamples)
         {
-            string id = GetValue(text, "LOCA_ID", headings);
-            string eastingTop = GetValue(text, "LOCA_NATE", headings);
-            string northingTop = GetValue(text, "LOCA_NATN", headings);
-            string topLevel = GetValue(text, "LOCA_GL", headings);
-            string eastingBot = GetValue(text, "LOCA_ETRV", headings);
-            string northingBot = GetValue(text, "LOCA_NTRV", headings);
-            string botDepth = GetValue(text, "LOCA_FDEP", headings);
+            string id = GetValue<string>(text, "LOCA_ID", headings,units);
+            double eastingTop = GetValue<double>(text, "LOCA_NATE", headings,units);
+            double northingTop = GetValue<double>(text, "LOCA_NATN", headings,units);
+            double topLevel = GetValue<double>(text, "LOCA_GL", headings,units);
+            double eastingBot = GetValue<double>(text, "LOCA_ETRV", headings,units);
+            double northingBot = GetValue<double>(text, "LOCA_NTRV", headings,units);
+            double botDepth = GetValue<double>(text, "LOCA_FDEP", headings,units);
 
-            string eastingTopLocal = "";
-            string northingTopLocal = "";
+            double eastingTopLocal;
+            double northingTopLocal;
 
-            if(eastingTop == "" || northingTop == "")
+            if(double.IsNaN(eastingTop) || double.IsNaN(northingTop))
             {
-                eastingTopLocal = GetValue(text, "LOCA_LOCX", headings);
-                northingTopLocal = GetValue(text, "LOCA_LOCY", headings);
-                if (eastingTopLocal == "" && northingTopLocal == "")
+                eastingTopLocal = GetValue<double>(text, "LOCA_LOCX", headings,units);
+                northingTopLocal = GetValue<double>(text, "LOCA_LOCY", headings,units);
+                if (double.IsNaN(eastingTopLocal)  && double.IsNaN(northingTopLocal))
                 {
                     Engine.Base.Compute.RecordError("No valid coordinates are found for the top of the borehole.");
                     return null;
                 }
-            }
-
-            if (eastingBot == "" || northingBot == "")
-            {
-                string eastingBotLocal = GetValue(text, "LOCA_XTRL", headings);
-                string northingBotLocal = GetValue(text, "LOCA_YTRL", headings);
-                if (eastingBotLocal == "" && northingBotLocal == "")
+                else if (double.IsNaN(eastingBot) || double.IsNaN(northingBot))
                 {
-                    Engine.Base.Compute.RecordWarning("No valid coordinates are found for the bottom of the borehole. Therefore, the borehole is assumed straight.");
-                    eastingBot = eastingTop == "" ? eastingTopLocal : eastingTop;
-                    northingBot = northingTop == "" ? northingTopLocal : northingTop;
+                    double eastingBotLocal = GetValue<double>(text, "LOCA_XTRL", headings, units);
+                    double northingBotLocal = GetValue<double>(text, "LOCA_YTRL", headings, units);
+                    if (double.IsNaN(eastingBotLocal) && double.IsNaN(northingBotLocal))
+                    {
+                        Engine.Base.Compute.RecordWarning("No valid coordinates are found for the bottom of the borehole. Therefore, the borehole is assumed straight.");
+                        eastingBot = double.IsNaN(eastingTop) ? eastingTopLocal : eastingTop;
+                        northingBot = double.IsNaN(northingTop) ? northingTopLocal : northingTop;
+                    }
                 }
             }
 
             Point top = new Point()
             {
-                X = double.Parse(eastingTop),
-                Y = double.Parse(northingTop),
-                Z = double.Parse(topLevel)
+                X = eastingTop,
+                Y = northingTop,
+                Z = topLevel
             };
 
             Point bottom = new Point()
             {
-                X = double.Parse(eastingBot),
-                Y = double.Parse(northingBot),
-                Z = top.Z - double.Parse(botDepth)
+                X = eastingBot,
+                Y = northingBot,
+                Z = top.Z - botDepth
             };
 
             List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
@@ -95,51 +95,39 @@ namespace BH.Adapter.AGS
             List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
 
             // Methodology
-            string type = GetValue(text, "LOCA_TYPE", headings);
-            string status = GetValue(text, "LOCA_STAT", headings);
-            string remarks = GetValue(text, "LOCA_REM", headings);
-            string purpose = GetValue(text, "LOCA_PURP", headings);
-            string termination = GetValue(text, "LOCA_TERM", headings);
+            string type = GetValue<string>(text, "LOCA_TYPE", headings,units);
+            string status = GetValue<string>(text, "LOCA_STAT", headings,units);
+            string remarks = GetValue<string>(text, "LOCA_REM", headings,units);
+            string purpose = GetValue<string>(text, "LOCA_PURP", headings,units);
+            string termination = GetValue<string>(text, "LOCA_TERM", headings,units);
 
             Methodology methodology = Engine.Ground.Create.Methodology(type, status, remarks, purpose, termination);
             if (methodology != null)
                 boreholeProperties.Add(methodology);
 
             // Location
-            string method = GetValue(text, "LOCA_LOCM", headings);
-            string subDivision = GetValue(text, "LOCA_LOCA", headings);
-            string phase = GetValue(text, "LOCA_CLST", headings);
-            string alignment = GetValue(text, "LOCA_ALID", headings);
-            string offset = GetValue(text, "LOCA_OFFS", headings);
+            string method = GetValue<string>(text, "LOCA_LOCM", headings,units);
+            string subDivision = GetValue<string>(text, "LOCA_LOCA", headings,units);
+            string phase = GetValue<string>(text, "LOCA_CLST", headings,units);
+            string alignment = GetValue<string>(text, "LOCA_ALID", headings,units);
+            double offset = GetValue<double>(text, "LOCA_OFFS", headings,units);
+            string chainage = GetValue<string>(text, "LOCA_CNGE", headings,units);
+            string algorithim = GetValue<string>(text, "LOCA_TRAN", headings,units);
 
-            double offsetValue;
-            if (!double.TryParse(offset, out offsetValue))
-                offsetValue = 0;
-
-            string chainage = GetValue(text, "LOCA_CNGE", headings);
-            string algorithim = GetValue(text, "LOCA_TRAN", headings);
-
-            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, offsetValue, chainage, algorithim);
+            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, offset, chainage, algorithim);
             if (location != null)
                 boreholeProperties.Add(location);
 
             // BoreholeReference
-            string startDate = GetValue(text, "LOCA_STAR", headings);
-            DateTime startDateValue;
-            if (!DateTime.TryParse(startDate, out startDateValue))
-                startDateValue = default(DateTime);
+            DateTime startDate = GetValue<DateTime>(text, "LOCA_STAR", headings,units);
+            DateTime endDate = GetValue<DateTime>(text, "LOCA_ENDD", headings,units);
 
-            string endDate = GetValue(text, "LOCA_ENDD", headings);
-            DateTime endDateValue;
-            if (!DateTime.TryParse(endDate, out endDateValue))
-                endDateValue = default(DateTime);
+            string file = GetValue<string>(text, "FILE_FSET", headings,units);
+            string originalId = GetValue<string>(text, "LOCA_ORID", headings,units);
+            string originalReference = GetValue<string>(text, "LOCA_ORJO", headings,units);
+            string originalCompany = GetValue<string>(text, "LOCA_ORCO", headings,units);
 
-            string file = GetValue(text, "FILE_FSET", headings);
-            string originalId = GetValue(text, "LOCA_ORID", headings);
-            string originalReference = GetValue(text, "LOCA_ORJO", headings);
-            string originalCompany = GetValue(text, "LOCA_ORCO", headings);
-
-            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(startDateValue, endDateValue, file, originalId, originalReference, originalCompany);
+            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(startDate, endDate, file, originalId, originalReference, originalCompany);
             if (boreholeReference != null)
                 boreholeProperties.Add(boreholeReference);
 

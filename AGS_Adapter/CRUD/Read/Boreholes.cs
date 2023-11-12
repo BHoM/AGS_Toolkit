@@ -42,7 +42,7 @@ namespace BH.Adapter.AGS
         private List<Borehole> ReadBoreholes(List<string> ids = null)
         {
             List<string> sectionText = GetSectionText("LOCA");
-               
+            List<string> unit = new List<string>();
             string heading = "";
             int dataIndex = -1;
 
@@ -54,13 +54,11 @@ namespace BH.Adapter.AGS
                 {
                     string group = line.Split(',')[0];
                     if (group.Contains("\"HEADING\""))
-                    {
                         heading = sectionText[i].Replace("\"", "");
-                    }
+                    else if (group.Contains("\"UNIT\""))
+                        unit.AddRange(group.Replace("\"", "").Split(','));
                     else if (group.Contains("\"DATA\""))
-                    {
                         dataIndex = i;
-                    }
 
                     if (dataIndex != -1 && heading != "")
                         break;
@@ -81,6 +79,7 @@ namespace BH.Adapter.AGS
             List<string> split = heading.Split(',').ToList();
 
             Dictionary<string, int> headingIndexes = new Dictionary<string, int>();
+            Dictionary<string, string> units = new Dictionary<string, string>();
 
             List<string> parameterHeadings = new List<string>()
             {
@@ -89,10 +88,16 @@ namespace BH.Adapter.AGS
                 "LOCA_PURP", "LOCA_TERM", "LOCA_ORID", "LOCA_ORJO", "LOCA_ORCO"
             };
 
-            foreach (string parameterHeading in parameterHeadings)
-                headingIndexes.Add(parameterHeading, GetHeadingIndex(parameterHeading, split));
+            //https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+            //
 
-            // Strata returns empty Borehole with structured strata or a temporary List<id>, remove ID from Stratum
+            foreach (string parameterHeading in parameterHeadings)
+            {
+                int index = GetHeadingIndex(parameterHeading, split);
+                headingIndexes.Add(parameterHeading, index);
+                units.Add(parameterHeading, unit[index]);
+            }
+
             IEnumerable<Stratum> strata = ReadStrata();
 
             IEnumerable<ContaminantSample> contaminantSamples = ReadContaminantSamples();
@@ -101,7 +106,7 @@ namespace BH.Adapter.AGS
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {
-                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes, strata, contaminantSamples);
+                Borehole borehole = Convert.FromBorehole(sectionText[i], headingIndexes, units, strata, contaminantSamples);
                 if (borehole != null)
                     boreholes.Add(borehole);
             }

@@ -41,10 +41,10 @@ namespace BH.Adapter.AGS
         public static ContaminantSample FromContaminantSample(string text, Dictionary<string, int> headings, Dictionary<string, string> units)
         { 
             string id = GetValue<string>(text, "LOCA_ID", headings,units);
-            double top = GetValue<double>(text, "SAMP_TOP", headings,units);
+            double top = Convert.Units(GetValue<double>(text, "SAMP_TOP", headings,units), "SAMP_TOP", units);
 
             if (double.IsNaN(top))
-                top = GetValue<double>(text, "SPEC_DPTH", headings,units);
+                top = Convert.Units(GetValue<double>(text, "SPEC_DPTH", headings,units), "SPEC_DPTH", units);
 
             if (double.IsNaN(top))
             {
@@ -59,7 +59,7 @@ namespace BH.Adapter.AGS
             string chemical = GetValue<string>(text, "ERES_CODE", headings,units);
             string name = GetValue<string>(text, "ERES_NAME", headings,units);
             string type = GetValue<string>(text, "SAMP_TYPE", headings,units);
-            double result = GetValue<double>(text, "ERES_RVAL", headings,units);
+            double result = Convert.Units(GetValue<double>(text, "ERES_RVAL", headings,units), "ERES_RVAL", units);
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
@@ -67,7 +67,6 @@ namespace BH.Adapter.AGS
             string reference = GetValue<string>(text, "SAMP_REF", headings,units);
             string specId = GetValue<string>(text, "SAMP_ID", headings,units);
             DateTime receiptDate = GetValue<DateTime>(text, "ERES_RDAT", headings,units);
-
             string batchCode = GetValue<string>(text, "ERES_SGRP", headings,units);
             string files = GetValue<string>(text, "FILE_FSET", headings,units);
 
@@ -97,8 +96,8 @@ namespace BH.Adapter.AGS
             string totalOrDissolved = GetValue<string>(text, "ERES_TORD", headings,units);
             string accreditingBody= GetValue<string>(text, "ERES_CRED", headings,units);
             string labName = GetValue<string>(text, "ERES_LAB", headings,units);
-            double percentageRemoved = GetValue<double>(text, "ERES_PERP", headings,units);
-            double sizeRemoved = GetValue<double>(text, "ERES_SIZE", headings,units);
+            double percentageRemoved = Convert.Units(GetValue<double>(text, "ERES_PERP", headings,units), "ERES_PERP", units);
+            double sizeRemoved = Convert.Units(GetValue<double>(text, "ERES_SIZE", headings,units), "ERES_SIZE", units);
             string instrumentReference = GetValue<string>(text, "ERES_IREF", headings,units);
             DateTime leachateDate = GetValue<DateTime>(text, "ERES_LDTM", headings,units);
             string leachateMethod = GetValue<string>(text, "ERES_LMTH", headings,units);
@@ -122,11 +121,11 @@ namespace BH.Adapter.AGS
                 contaminantProperties.Add(resultProperties);
 
             // Detection Properties
-            double detectionLimit = GetValue<double>(text, "ERES_RDLM", headings,units);
-            double methodDetectionLimit = GetValue<double>(text, "ERES_MDLM", headings,units);
-            double quantificationLimit = GetValue<double>(text, "ERES_QLM", headings,units);
-            double ticProbability = GetValue<double>(text, "ERES_TICP", headings,units);
-            double ticRetention = GetValue<double>(text, "ERES_TICT", headings,units);
+            double detectionLimit = Convert.Units(GetValue<double>(text, "ERES_RDLM", headings,units), "ERES_RDLM", units);
+            double methodDetectionLimit = Convert.Units(GetValue<double>(text, "ERES_MDLM", headings,units), "ERES_MDLM", units);
+            double quantificationLimit = Convert.Units(GetValue<double>(text, "ERES_QLM", headings,units), "ERES_QLM", units);
+            double ticProbability = Convert.Units(GetValue<double>(text, "ERES_TICP", headings,units), "ERES_TICP", units);
+            double ticRetention = Convert.Units(GetValue<double>(text, "ERES_TICT", headings,units), "ERES_TICT", units);
 
             DetectionProperties detectionProperties = Engine.Ground.Create.DetectionProperties(detectionLimit,methodDetectionLimit, quantificationLimit, ticProbability, ticRetention);
             if (detectionProperties != null)

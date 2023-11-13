@@ -57,7 +57,7 @@ namespace BH.Adapter.AGS
                         heading = sectionText[i].Replace("\"", "");
                     }
                     else if (group.Contains("\"UNIT\""))
-                        unit.AddRange(group.Replace("\"", "").Split(','));
+                        unit.AddRange(line.Replace("\"", "").Split(','));
                     else if (group.Contains("\"DATA\""))
                     {
                         dataIndex = i;
@@ -96,7 +96,10 @@ namespace BH.Adapter.AGS
             {
                 int index = GetHeadingIndex(parameterHeading, split);
                 headingIndexes.Add(parameterHeading, index);
-                units.Add(parameterHeading, unit[index]);
+                if (index != -1)
+                    units.Add(parameterHeading, unit[index]);
+                else
+                    units.Add(parameterHeading, "");
             }
 
             List<ContaminantSample> contaminantSamples = new List<ContaminantSample>();

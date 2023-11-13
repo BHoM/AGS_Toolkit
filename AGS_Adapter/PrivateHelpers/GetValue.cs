@@ -22,8 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Adapter.AGS
 {
@@ -53,7 +55,7 @@ namespace BH.Adapter.AGS
                 {
                     value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim();
 
-                }    
+                }
             }
             else
             {
@@ -70,23 +72,43 @@ namespace BH.Adapter.AGS
                 double number;
                 if (!double.TryParse(value, out number))
                     number = double.NaN;
+
                 return number;
             }
-            else if(typeof(T) == typeof(DateTime))
+            else if (typeof(T) == typeof(int))
+            {
+                int number;
+                if (!int.TryParse(value, out number))
+                    number = 0;
+
+                return number;
+            }
+            else if (typeof(T) == typeof(DateTime))
             {
                 DateTime date;
-                if (!DateTime.TryParse(value, out date))
+                string dateFormat = "";
+                units.TryGetValue(heading, out dateFormat);
+                if (dateFormat == "")
+                {
+                    DateTime.TryParse(value, out date);
                     date = default(DateTime);
+                }
+                else
+                {
+                    if (!DateTime.TryParseExact(value, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                        date = default(DateTime);
+                }
+
                 return date;
             }
-            else if(typeof(T) == typeof(bool))
+            else if (typeof(T) == typeof(bool))
             {
                 bool boolean = ParseYNString(value);
                 return boolean;
             }
             else
             {
-                return value as object;
+                return value;
             }
         }
 

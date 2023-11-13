@@ -37,8 +37,8 @@ namespace BH.Adapter.AGS
         public static Stratum FromStratum(string text, Dictionary<string, int> headings, string blankGeology, Dictionary<string,string> units)
         {
             string id = GetValue<string>(text, "LOCA_ID", headings,units);
-            double top = GetValue<double>(text, "GEOL_TOP", headings,units);
-            double bottom = GetValue<double>(text, "GEOL_BASE", headings,units);
+            double top = Convert.Units(GetValue<double>(text, "GEOL_TOP", headings,units), "GEOL_TOP", units);
+            double bottom = Convert.Units(GetValue<double>(text, "GEOL_BASE", headings,units), "GEOL_BASE", units);
 
             if (double.IsNaN(top) || double.IsNaN(bottom))
             {

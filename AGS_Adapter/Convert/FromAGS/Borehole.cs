@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Ground;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Adapter.AGS
 {
@@ -43,35 +44,35 @@ namespace BH.Adapter.AGS
             IEnumerable<ContaminantSample> contaminantSamples)
         {
             string id = GetValue<string>(text, "LOCA_ID", headings,units);
-            double eastingTop = GetValue<double>(text, "LOCA_NATE", headings,units);
-            double northingTop = GetValue<double>(text, "LOCA_NATN", headings,units);
-            double topLevel = GetValue<double>(text, "LOCA_GL", headings,units);
-            double eastingBot = GetValue<double>(text, "LOCA_ETRV", headings,units);
-            double northingBot = GetValue<double>(text, "LOCA_NTRV", headings,units);
-            double botDepth = GetValue<double>(text, "LOCA_FDEP", headings,units);
+            double eastingTop = Convert.Units(GetValue<double>(text, "LOCA_NATE", headings, units), "LOCA_NATE", units);
+            double northingTop = Convert.Units(GetValue<double>(text, "LOCA_NATN", headings,units), "LOCA_NATN", units);
+            double topLevel = Convert.Units(GetValue<double>(text, "LOCA_GL", headings,units), "LOCA_GL", units);
+            double eastingBot = Convert.Units(GetValue<double>(text, "LOCA_ETRV", headings,units), "LOCA_ETRV", units);
+            double northingBot = Convert.Units(GetValue<double>(text, "LOCA_NTRV", headings,units), "LOCA_NTRV", units);
+            double botDepth = Convert.Units(GetValue<double>(text, "LOCA_FDEP", headings,units), "LOCA_FDEP", units);
 
-            double eastingTopLocal;
-            double northingTopLocal;
+            double eastingTopLocal = double.NaN;
+            double northingTopLocal = double.NaN;
 
             if(double.IsNaN(eastingTop) || double.IsNaN(northingTop))
             {
-                eastingTopLocal = GetValue<double>(text, "LOCA_LOCX", headings,units);
-                northingTopLocal = GetValue<double>(text, "LOCA_LOCY", headings,units);
+                eastingTopLocal = Convert.Units(GetValue<double>(text, "LOCA_LOCX", headings,units), "LOCA_LOCX", units);
+                northingTopLocal = Convert.Units(GetValue<double>(text, "LOCA_LOCY", headings,units), "LOCA_LOCY", units);
                 if (double.IsNaN(eastingTopLocal)  && double.IsNaN(northingTopLocal))
                 {
                     Engine.Base.Compute.RecordError("No valid coordinates are found for the top of the borehole.");
                     return null;
                 }
-                else if (double.IsNaN(eastingBot) || double.IsNaN(northingBot))
+            }
+            else if (double.IsNaN(eastingBot) || double.IsNaN(northingBot))
+            {
+                double eastingBotLocal = Convert.Units(GetValue<double>(text, "LOCA_XTRL", headings, units), "LOCA_XTRL", units);
+                double northingBotLocal = Convert.Units(GetValue<double>(text, "LOCA_YTRL", headings, units), "LOCA_YTRL", units);
+                if (double.IsNaN(eastingBotLocal) && double.IsNaN(northingBotLocal))
                 {
-                    double eastingBotLocal = GetValue<double>(text, "LOCA_XTRL", headings, units);
-                    double northingBotLocal = GetValue<double>(text, "LOCA_YTRL", headings, units);
-                    if (double.IsNaN(eastingBotLocal) && double.IsNaN(northingBotLocal))
-                    {
-                        Engine.Base.Compute.RecordWarning("No valid coordinates are found for the bottom of the borehole. Therefore, the borehole is assumed straight.");
-                        eastingBot = double.IsNaN(eastingTop) ? eastingTopLocal : eastingTop;
-                        northingBot = double.IsNaN(northingTop) ? northingTopLocal : northingTop;
-                    }
+                    Engine.Base.Compute.RecordWarning("No valid coordinates are found for the bottom of the borehole. Therefore, the borehole is assumed straight.");
+                    eastingBot = double.IsNaN(eastingTop) ? eastingTopLocal : eastingTop;
+                    northingBot = double.IsNaN(northingTop) ? northingTopLocal : northingTop;
                 }
             }
 

@@ -40,7 +40,7 @@ namespace BH.Adapter.AGS
             if (localIndex == -1)
             {
                 Engine.Base.Compute.RecordError($"{section} not found within AGS file");
-                return null;
+                return sectionText;
             }
             int headingIndex = m_headingIndexes[localIndex];
 

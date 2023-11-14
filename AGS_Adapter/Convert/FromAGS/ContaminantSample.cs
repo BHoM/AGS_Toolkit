@@ -39,7 +39,10 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
         public static ContaminantSample FromContaminantSample(string text, Dictionary<string, int> headings, Dictionary<string, string> units)
-        { 
+        {
+            if (text == "")
+                return null;
+
             string id = GetValue<string>(text, "LOCA_ID", headings,units);
             double top = Convert.Units(GetValue<double>(text, "SAMP_TOP", headings,units), "SAMP_TOP", units);
 

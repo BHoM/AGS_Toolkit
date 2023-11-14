@@ -43,7 +43,13 @@ namespace BH.Adapter.AGS
         public static Borehole FromBorehole(string text, Dictionary<string,int> headings, Dictionary<string, string> units, IEnumerable<Stratum> strata, 
             IEnumerable<ContaminantSample> contaminantSamples)
         {
+            if (text == "")
+                return null;
+
             string id = GetValue<string>(text, "LOCA_ID", headings,units);
+            if(id == "")
+                Engine.Base.Compute.RecordWarning("No valid id found for the Borehole.");
+
             double eastingTop = Convert.Units(GetValue<double>(text, "LOCA_NATE", headings, units), "LOCA_NATE", units);
             double northingTop = Convert.Units(GetValue<double>(text, "LOCA_NATN", headings,units), "LOCA_NATN", units);
             double topLevel = Convert.Units(GetValue<double>(text, "LOCA_GL", headings,units), "LOCA_GL", units);
@@ -60,8 +66,7 @@ namespace BH.Adapter.AGS
                 northingTopLocal = Convert.Units(GetValue<double>(text, "LOCA_LOCY", headings,units), "LOCA_LOCY", units);
                 if (double.IsNaN(eastingTopLocal)  && double.IsNaN(northingTopLocal))
                 {
-                    Engine.Base.Compute.RecordError("No valid coordinates are found for the top of the borehole.");
-                    return null;
+                    Engine.Base.Compute.RecordWarning($"No valid coordinates are found for the top of the borehole {id}.");
                 }
             }
             else if (double.IsNaN(eastingBot) || double.IsNaN(northingBot))

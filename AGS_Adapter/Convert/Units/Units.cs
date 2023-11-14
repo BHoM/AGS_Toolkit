@@ -36,6 +36,9 @@ namespace BH.Adapter.AGS
 
         public static double Units(double value, string heading, Dictionary<string,string> units)
         {
+            if (double.IsNaN(value))
+                return value;
+
             string unit = "";
             units.TryGetValue(heading, out unit);
 

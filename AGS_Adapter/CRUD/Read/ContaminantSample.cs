@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Base;
 using System;
@@ -40,7 +41,13 @@ namespace BH.Adapter.AGS
 
         private List<ContaminantSample> ReadContaminantSamples(List<string> ids = null)
         {
+            List<ContaminantSample> contaminantSamples = new List<ContaminantSample>();
+
             List<string> sectionText = GetSectionText("ERES");
+
+            if (sectionText.IsNullOrEmpty())
+                return contaminantSamples;
+
             List<string> unit = new List<string>();
             string heading = "";
             int dataIndex = -1;
@@ -70,12 +77,12 @@ namespace BH.Adapter.AGS
 
             if (heading == "")
             {
-                Engine.Base.Compute.RecordError("The HEADING header is not present in the text file.");
+                Compute.RecordError("The HEADING header is not present in the text file.");
                 return null;
             }
             if (dataIndex == -1)
             {
-                Engine.Base.Compute.RecordError("The DATA header is not present in the text file.");
+                Compute.RecordError("The DATA header is not present in the text file.");
                 return null;
             }
 
@@ -101,8 +108,6 @@ namespace BH.Adapter.AGS
                 else
                     units.Add(parameterHeading, "");
             }
-
-            List<ContaminantSample> contaminantSamples = new List<ContaminantSample>();
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {

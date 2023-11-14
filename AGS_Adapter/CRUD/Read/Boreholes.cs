@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Base;
 using System;
@@ -41,7 +42,13 @@ namespace BH.Adapter.AGS
         /***************************************************/
         private List<Borehole> ReadBoreholes(List<string> ids = null)
         {
+            List<Borehole> boreholes = new List<Borehole>();
+
             List<string> sectionText = GetSectionText("LOCA");
+
+            if (sectionText.IsNullOrEmpty())
+                return boreholes;
+
             List<string> unit = new List<string>();
             string heading = "";
             int dataIndex = -1;
@@ -88,9 +95,6 @@ namespace BH.Adapter.AGS
                 "LOCA_PURP", "LOCA_TERM", "LOCA_ORID", "LOCA_ORJO", "LOCA_ORCO"
             };
 
-            //https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
-            //
-
             foreach (string parameterHeading in parameterHeadings)
             {
                 int index = GetHeadingIndex(parameterHeading, split);
@@ -102,10 +106,7 @@ namespace BH.Adapter.AGS
             }
 
             IEnumerable<Stratum> strata = ReadStrata();
-
             IEnumerable<ContaminantSample> contaminantSamples = ReadContaminantSamples();
-
-            List<Borehole> boreholes = new List<Borehole>();
 
             for (int i = dataIndex; i < sectionText.Count; i++)
             {

@@ -23,6 +23,9 @@
       <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
+    <Reference Include="FuzzySharp">
+      <HintPath>..\libs\FuzzySharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

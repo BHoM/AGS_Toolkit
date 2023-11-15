@@ -58,7 +58,7 @@ namespace BH.Engine.Adapters.AGS
                 case Scorer.TokenSetScorer:
                     return TokenSetRatio(text, compare);
                 case Scorer.PartialTokenSetScorer:
-                    return PartialRatio(text, compare);
+                    return PartialTokenSetRatio(text, compare);
                 case Scorer.TokenSortScorer:
                     return TokenSortRatio(text, compare);
                 case Scorer.PartialTokenSortScorer:
@@ -67,6 +67,10 @@ namespace BH.Engine.Adapters.AGS
                     return TokenAbbreviationRatio(text, compare);
                 case Scorer.PartialTokenAbbreviationScorer:
                     return PartialTokenAbbreviationRatio(text, compare);
+                case Scorer.TokenInitialismScorer:
+                    return TokenInitialismRatio(text, compare);
+                case Scorer.PartialTokenInitialismScorer:
+                    return PartialTokenInitialismRatio(text, compare);
                 case Scorer.WeightedRatioScorer:
                     return WeightedRatio(text, compare);
 

@@ -49,6 +49,10 @@ namespace BH.oM.Adapters.AGS
         [Description("Similarity ratio that attempts to determine whether one strings tokens are an abbreviation of the other strings tokens. One string must have all its " +
             "characters in order in the other string to even be considered.")]
         PartialTokenAbbreviationScorer,
+        [Description("Splits longer string into tokens and takes the initialism and compares it to the shorter string.")]
+        TokenInitialismScorer,
+        [Description("Splits longer string into tokens and takes the initialism and compares it to the shorter string.")]
+        PartialTokenInitialismScorer,
         [Description("Calculates a weighted ratio between the different algorithms for best results.")]
         WeightedRatioScorer,
     }

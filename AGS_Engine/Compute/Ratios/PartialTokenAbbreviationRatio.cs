@@ -27,6 +27,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
+using FuzzySharp.PreProcess;
+
 
 namespace BH.Engine.Adapters.AGS
 {
@@ -43,7 +45,7 @@ namespace BH.Engine.Adapters.AGS
         [Output("r", "The ratio of similarity between the two strings.")]
         public static int PartialTokenAbbreviationRatio(string text, string compare)
         {
-            return Fuzz.PartialTokenAbbreviationRatio(text, compare);
+            return Fuzz.PartialTokenAbbreviationRatio(text, compare, PreprocessMode.Full);
         }
 
         /***************************************************/

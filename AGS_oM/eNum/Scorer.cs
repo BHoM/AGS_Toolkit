@@ -27,7 +27,7 @@ namespace BH.oM.Adapters.AGS
     /***************************************************/
 
     [Description("Defines the scorer method to be used in the fuzzy matching methods (i.e. Extract).")]
-    public enum Scorers
+    public enum Scorer
     {
         [Description("Calculates a Levenshtein simple ratio between the strings. This indicates a measure of similarity.")]
         DefaultRatioScorer,

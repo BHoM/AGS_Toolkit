@@ -44,26 +44,26 @@ namespace BH.Engine.Adapters.AGS
         [Description("Returns the scorer method to be used in FuzzyMatching methods.")]
         [Input("scorer", "The scorer input type")]
         [Output("o", "The scorer method.")]
-        public static IRatioScorer GetScorer(Scorers scorer)
+        public static IRatioScorer GetScorer(Scorer scorer)
         {
             switch (scorer)
             {
-                case Scorers.DefaultRatioScorer:
+                case Scorer.DefaultRatioScorer:
                 default:
                     return ScorerCache.Get<DefaultRatioScorer>();
-                case Scorers.PartialRatioScorer:
+                case Scorer.PartialRatioScorer:
                     return ScorerCache.Get<PartialRatioScorer>();
-                case Scorers.TokenSetScorer:
+                case Scorer.TokenSetScorer:
                     return ScorerCache.Get<TokenSetScorer>();
-                case Scorers.PartialTokenSetScorer:
+                case Scorer.PartialTokenSetScorer:
                     return ScorerCache.Get<PartialTokenSetScorer>();
-                case Scorers.TokenSortScorer:
+                case Scorer.TokenSortScorer:
                     return ScorerCache.Get<TokenSortScorer>();
-                case Scorers.TokenAbbreviationScorer:
+                case Scorer.TokenAbbreviationScorer:
                     return ScorerCache.Get<TokenSortScorer>();
-                case Scorers.PartialTokenAbbreviationScorer:
+                case Scorer.PartialTokenAbbreviationScorer:
                     return ScorerCache.Get<PartialTokenAbbreviationScorer>();
-                case Scorers.WeightedRatioScorer:
+                case Scorer.WeightedRatioScorer:
                     return ScorerCache.Get<WeightedRatioScorer>();
             }
         }

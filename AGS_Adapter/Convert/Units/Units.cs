@@ -44,27 +44,45 @@ namespace BH.Adapter.AGS
 
             if(heading != "")
             {
-                switch (unit)
+                switch (unit.ToLower())
                 {
+                    // Length
                     case "m":
-                    case "M":
                         return value;
-                    case "CM":
                     case "cm":
                         return value.FromCentimetre();
-                    case "MM":
                     case "mm":
                         return value.FromMillimetre();
                     case "ft":
-                    case "FT":
                         return value.FromFoot();
                     case "in":
-                    case "IN":
                         return value.FromInch();
+                    // Density
+                    case "mg/L":
+                        return value.FromMilligramPerLitre();
+                    case "g/L":
+                        return value.FromGramPerLitre();
+                    //MassFraction
+                    case "mg/kg":
+                        return value.FromMilligramPerKilogram();
+                    case "ug/kg":
+                    case "μg/kg":
+                        return value.FromMicrogramPerKilogram();
+                    case "g/kg":
+                        return value.FromGramPerKilogram();
+                    case "kg/kg":
+                        return value;
+                    // Time
+                    case "s":
+                        return value;
+
+                    // Dimensionless
                     case "%":
+                        return value;
                     default:
                         Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {heading}.");
                         return value;
+
                 }
             }
             else

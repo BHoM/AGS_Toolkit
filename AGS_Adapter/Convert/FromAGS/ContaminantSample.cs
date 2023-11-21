@@ -20,15 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Geometry;
-using BH.oM.Geometry;
 using BH.oM.Ground;
 
 namespace BH.Adapter.AGS
@@ -62,6 +58,10 @@ namespace BH.Adapter.AGS
             string chemical = GetValue<string>(text, "ERES_CODE", headings,units);
             string name = GetValue<string>(text, "ERES_NAME", headings,units);
             string type = GetValue<string>(text, "SAMP_TYPE", headings,units);
+            string rvalUnit = GetValue<string>(text, "ERES_RUNI", headings, units);
+
+            //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
+            units["ERES_RVAL"] = rvalUnit;
             double result = Convert.Units(GetValue<double>(text, "ERES_RVAL", headings,units), "ERES_RVAL", units);
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();

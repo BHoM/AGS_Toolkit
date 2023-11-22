@@ -45,41 +45,40 @@ namespace BH.Adapter.AGS
         {
             if (File.Exists(filePath))
             {
-                m_directory = GetDirectoryRoot(filePath);
-
-                m_ags = File.ReadAllLines(filePath).ToList();
+                List<string> lines = File.ReadAllLines(filePath).ToList();
 
                 // Determine where the section starts
-                for (int i = 0; i < m_ags.Count; i++)
+                string group = "";
+                List<string> headings = new List<string>();
+                foreach (string line in lines)
                 {
-                    string line = m_ags[i];
-                    if (!(line.Length < 5) && line.Contains(","))
+                    List<string> split = line.Split(new string[] { "\",\"" }, StringSplitOptions.None).ToList();
+                    if (split.Count < 2)
+                        continue;
+
+                    switch (split[0]) // TODO: If there are risks that the file is incorectly formated, we need to add addtional checks (e.g missing section, nb of columns not matching)
                     {
-                        List<string> split = line.Split(',').ToList();
-                        if (split[0].Contains("\"GROUP\""))
-                        {
-                            m_headings.Add(split[1].Replace("\"", ""));
-                            m_headingIndexes.Add(i);
-                        }    
+                        case "\"GROUP\"":
+                            group = split[1];
+                            m_Data[group] = new List<Dictionary<string, string>>();
+                            break;
+                        case "\"HEADING\"":
+                            headings = split.Skip(1).ToList();
+                            break;
+                        case "\"UNIT\"":
+                            m_Units[group] = headings.Zip(split.Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u);
+                            break;
+                        case "\"DATA\"":
+                            m_Data[group].Add(headings.Zip(split.Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u));
+                            break;
+                        default:   // TYPE is ignored for now as it doeesn't seem to be used anywhere
+                            break;
 
                     }
                 }
-
-                // Seperate out the text files
-                //for (int i = 0; i < groupHeadings.Count - 1; i++)
-                //{
-                //    int groupHeading = groupHeadings[i];
-                //    List<string> section = agsFile.GetRange(groupHeading, groupHeadings[i + 1] - groupHeading -1);
-                //    string sectionHeading = section[0].Split(',')[1].Replace('"', ' ').Trim();
-                //    File.WriteAllLines(textFiles + "\\" + sectionHeading + ".txt",section);
-                //}
             }
 
-            if(agsSettings.BlankGeology != "")
-            {
-                m_blankGeology = agsSettings.BlankGeology;
-            }
-
+            m_Settings = agsSettings;
         }
 
         /***************************************************/
@@ -98,8 +97,11 @@ namespace BH.Adapter.AGS
         /**** Private  Fields                           ****/
         /***************************************************/
 
+        private Dictionary<string, List<Dictionary<string, string>>> m_Data = new Dictionary<string, List<Dictionary<string, string>>>();
+        private Dictionary<string, Dictionary<string, string>> m_Units = new Dictionary<string, Dictionary<string, string>>();
+        private AGSSettings m_Settings = null;
+
         private List<string> m_ags;
-        private string m_directory;
         private string m_blankGeology;
         private List<string> m_headings = new List<string>();
         private List<int> m_headingIndexes = new List<int>();

@@ -107,7 +107,7 @@ namespace BH.Adapter.AGS
             string purpose = GetValue<string>(text, "LOCA_PURP", headings,units);
             string termination = GetValue<string>(text, "LOCA_TERM", headings,units);
 
-            Methodology methodology = Engine.Ground.Create.Methodology(type, status, remarks, purpose, termination);
+            Methodology methodology = new Methodology() { Type = type, Status = status, Remarks = remarks, Purpose = purpose, Termination = termination };
             if (methodology != null)
                 boreholeProperties.Add(methodology);
 
@@ -120,7 +120,7 @@ namespace BH.Adapter.AGS
             string chainage = GetValue<string>(text, "LOCA_CNGE", headings,units);
             string algorithim = GetValue<string>(text, "LOCA_TRAN", headings,units);
 
-            Location location = Engine.Ground.Create.Location(method, subDivision, phase, alignment, offset, chainage, algorithim);
+            Location location = new Location() { Method = method, SubDivision = subDivision, Phase = phase, Alignment = alignment, Offset = offset, Chainage = chainage, Algorithm = algorithim };
             if (location != null)
                 boreholeProperties.Add(location);
 
@@ -133,7 +133,8 @@ namespace BH.Adapter.AGS
             string originalReference = GetValue<string>(text, "LOCA_ORJO", headings,units);
             string originalCompany = GetValue<string>(text, "LOCA_ORCO", headings,units);
 
-            BoreholeReference boreholeReference = Engine.Ground.Create.BoreholeReference(startDate, endDate, file, originalId, originalReference, originalCompany);
+            BoreholeReference boreholeReference = new BoreholeReference(){ StartDate = startDate, EndDate = endDate, File = file, OriginalId = originalId, OriginalReference = originalReference, 
+                OriginalCompany = originalCompany};
             if (boreholeReference != null)
                 boreholeProperties.Add(boreholeReference);
 

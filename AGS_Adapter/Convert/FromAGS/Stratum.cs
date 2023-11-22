@@ -69,7 +69,7 @@ namespace BH.Adapter.AGS
             string references = GetValue<string>(text, "FILE_FSET", headings,units);
             string remarks = GetValue<string>(text, "GEOL_REM", headings,units);
 
-            StratumReference reference = Engine.Ground.Create.StratumReference(remarks, lexiconCode, strataRef, references);
+            StratumReference reference = new StratumReference() {Remarks = remarks, LexiconCode = lexiconCode, Name = strataRef, Files = references };
             if (reference != null)
                 stratumProperties.Add(reference);
 

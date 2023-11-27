@@ -37,6 +37,7 @@ namespace BH.Adapter.AGS
         public static Stratum FromStratum(Dictionary<string, string> data, Dictionary<string, string> units, string blankGeology)
         {
             string id = GetValue<string>(data["LOCA_ID"]);
+
             double top = Convert.Units(GetValue<double>(data["GEOL_TOP"]), units["GEOL_TOP"]);
             double bottom = Convert.Units(GetValue<double>(data["GEOL_BASE"]), units["GEOL_BASE"]);
 

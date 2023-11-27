@@ -58,18 +58,18 @@ namespace BH.Adapter.AGS
 
                     switch (split[0]) // TODO: If there are risks that the file is incorectly formated, we need to add addtional checks (e.g missing section, nb of columns not matching)
                     {
-                        case "\"GROUP\"":
-                            group = split[1];
+                        case "\"GROUP":
+                            group = split[1].Replace("\"", "");
                             m_Data[group] = new List<Dictionary<string, string>>();
                             break;
-                        case "\"HEADING\"":
-                            headings = split.Skip(1).ToList();
+                        case "\"HEADING":
+                            headings = split.Skip(1).Select(x => x.Replace("\"", "")).ToList();
                             break;
-                        case "\"UNIT\"":
-                            m_Units[group] = headings.Zip(split.Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u);
+                        case "\"UNIT":
+                            m_Units[group] = headings.Zip(split.Select(x => x.Replace("\"", "")).Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u);
                             break;
-                        case "\"DATA\"":
-                            m_Data[group].Add(headings.Zip(split.Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u));
+                        case "\"DATA":
+                            m_Data[group].Add(headings.Zip(split.Select(x => x.Replace("\"", "")).Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u));
                             break;
                         default:   // TYPE is ignored for now as it doeesn't seem to be used anywhere
                             break;
@@ -79,6 +79,7 @@ namespace BH.Adapter.AGS
             }
 
             m_Settings = agsSettings;
+            m_blankGeology = agsSettings.BlankGeology;
         }
 
         /***************************************************/

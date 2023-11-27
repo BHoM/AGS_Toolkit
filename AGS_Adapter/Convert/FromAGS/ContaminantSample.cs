@@ -66,7 +66,7 @@ namespace BH.Adapter.AGS
             // Contaminant Reference
             string reference = GetValue<string>(data["SAMP_REF"]);
             string specId = GetValue<string>(data["SAMP_ID"]);
-            DateTime receiptDate = GetValue<DateTime>(data["ERES_RDAT"]);
+            DateTime receiptDate = GetDateTime(data["ERES_RDAT"], units["ERES_RDAT"]);
             string batchCode = GetValue<string>(data["ERES_SGRP"]);
             string files = GetValue<string>(data["FILE_FSET"]);
 
@@ -81,7 +81,7 @@ namespace BH.Adapter.AGS
             string runType = GetValue<string>(data["ERES_RTYP"]);
             string matrix = GetValue<string>(data["ERES_MATX"]);
             string method = GetValue<string>(data["ERES_METH"]);
-            DateTime analysisDate = GetValue<DateTime>(data["ERES_DTIM"]);
+            DateTime analysisDate = GetDateTime(data["ERES_DTIM"], units["ERES_DTIM"]);
 
             string description = GetValue<string>(data["SPEC_DESC"]);
             string remarks = GetValue<string>(data["ERES_REM"]);
@@ -110,7 +110,7 @@ namespace BH.Adapter.AGS
             double percentageRemoved = Convert.Units(GetValue<double>(data["ERES_PERP"]), units["ERES_PERP"]);
             double sizeRemoved = Convert.Units(GetValue<double>(data["ERES_SIZE"]), units["ERES_SIZE"]);
             string instrumentReference = GetValue<string>(data["ERES_IREF"]);
-            DateTime leachateDate = GetValue<DateTime>(data["ERES_LDTM"]);
+            DateTime leachateDate = GetDateTime(data["ERES_LDTM"], units["ERES_LDTM"]);
             string leachateMethod = GetValue<string>(data["ERES_LMTH"]);
             int dilutionFactor = GetValue<int>(data["ERES_DIL"]);
             string basis = GetValue<string>(data["ERES_BAS"]);
@@ -139,7 +139,7 @@ namespace BH.Adapter.AGS
             bool detectFlag = GetValue<bool>(data["ERES_DETF"]);
             bool organic = GetValue<bool>(data["ERES_ORG"]);
 
-            ResultProperties resultProperties = new ResultProperties() { Organic = organic, Reportable = reportable, DetectFlag = detectFlag, Type = type };
+            ResultProperties resultProperties = new ResultProperties() { Organic = organic, Reportable = reportable, DetectFlag = detectFlag, Type = resultType };
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 

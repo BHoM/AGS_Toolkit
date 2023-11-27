@@ -123,8 +123,8 @@ namespace BH.Adapter.AGS
                 boreholeProperties.Add(location);
 
             // BoreholeReference
-            DateTime startDate = GetValue<DateTime>(data["LOCA_STAR"]);
-            DateTime endDate = GetValue<DateTime>(data["LOCA_ENDD"]);
+            DateTime startDate = GetDateTime(data["LOCA_STAR"],units["LOCA_STAR"]);
+            DateTime endDate = GetDateTime(data["LOCA_ENDD"], units["LOCA_ENDD"]);
 
             string file = GetValue<string>(data["FILE_FSET"]);
             string originalId = GetValue<string >(data["LOCA_ORID"]);

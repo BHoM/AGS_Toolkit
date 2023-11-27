@@ -34,16 +34,13 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static ContaminantSample FromContaminantSample(string text, Dictionary<string, int> headings, Dictionary<string, string> units)
+        public static ContaminantSample FromContaminantSample(Dictionary<string, string> data, Dictionary<string, string> units)
         {
-            if (text == "")
-                return null;
-
-            string id = GetValue<string>(text, "LOCA_ID", headings, units);
-            double top = Convert.Units(GetValue<double>(text, "SAMP_TOP", headings, units), "SAMP_TOP", units);
+            string id = GetValue<string>(data["LOCA_ID"], units["LOCA_ID"]);
+            double top = Convert.Units(GetValue<double>(data["SAMP_TOP"], units["SAMP_TOP"]), units["SAMP_TOP"]);
 
             if (double.IsNaN(top))
-                top = Convert.Units(GetValue<double>(text, "SPEC_DPTH", headings, units), "SPEC_DPTH", units);
+                top = Convert.Units(GetValue<double>(data["SPEC_DPTH"], units["SPEC_DPTH"]), units["SPEC_DPTH"]);
 
             if (double.IsNaN(top))
             {
@@ -55,40 +52,40 @@ namespace BH.Adapter.AGS
             }
 
             // ContaminantSample
-            string chemical = GetValue<string>(text, "ERES_CODE", headings, units);
-            string name = GetValue<string>(text, "ERES_NAME", headings, units);
-            string type = GetValue<string>(text, "SAMP_TYPE", headings, units);
-            string rvalUnit = GetValue<string>(text, "ERES_RUNI", headings, units);
+            string chemical = GetValue<string>(data["ERES_CODE"], units["ERES_CODE"]);
+            string name = GetValue<string>(data["ERES_NAME"], units["ERES_NAME"]);
+            string type = GetValue<string>(data["SAMP_TYPE"], units["SAMP_TYPE"]);
+            string rvalUnit = GetValue<string>(data["ERES_RUNI"], units["ERES_RUNI"]);
 
             //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
             units["ERES_RVAL"] = rvalUnit;
-            double result = Convert.Units(GetValue<double>(text, "ERES_RVAL", headings, units), "ERES_RVAL", units);
+            double result = Convert.Units(GetValue<double>(data["ERES_RVAL"], units["ERES_RVAL"]), units["ERES_RVAL"]);
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
             // Contaminant Reference
-            string reference = GetValue<string>(text, "SAMP_REF", headings, units);
-            string specId = GetValue<string>(text, "SAMP_ID", headings, units);
-            DateTime receiptDate = GetValue<DateTime>(text, "ERES_RDAT", headings, units);
-            string batchCode = GetValue<string>(text, "ERES_SGRP", headings, units);
-            string files = GetValue<string>(text, "FILE_FSET", headings, units);
+            string reference = GetValue<string>(data["SAMP_REF"], units["SAMP_REF"]);
+            string specId = GetValue<string>(data["SAMP_ID"], units["SAMP_ID"]);
+            DateTime receiptDate = GetValue<DateTime>(data["ERES_RDAT"], units["ERES_RDAT"]);
+            string batchCode = GetValue<string>(data["ERES_SGRP"], units["ERES_SGRP"]);
+            string files = GetValue<string>(data["FILE_FSET"], units["FILE_FSET"]);
 
             ContaminantReference contaminantReference = new ContaminantReference() { Reference = reference, Id = specId, ReceiptDate = receiptDate, BatchCode = batchCode, Files = files };
             if (contaminantReference != null)
                 contaminantProperties.Add(contaminantReference);
 
             // Test Properties
-            string testName = GetValue<string>(text, "ERES_TEST", headings, units);
-            string labTestName = GetValue<string>(text, "ERES_TNAM", headings, units);
-            string testReference = GetValue<string>(text, "ERES_TESN", headings, units);
-            string runType = GetValue<string>(text, "ERES_RTYP", headings, units);
-            string matrix = GetValue<string>(text, "ERES_MATX", headings, units);
-            string method = GetValue<string>(text, "ERES_METH", headings, units);
-            DateTime analysisDate = GetValue<DateTime>(text, "ERES_DTIM", headings, units);
+            string testName = GetValue<string>(data["ERES_TEST"], units["ERES_TEST"]);
+            string labTestName = GetValue<string>(data["ERES_TNAM"], units["ERES_TNAM"]);
+            string testReference = GetValue<string>(data["ERES_TESN"], units["ERES_TESN"]);
+            string runType = GetValue<string>(data["ERES_RTYP"], units["ERES_RTYP"]);
+            string matrix = GetValue<string>(data["ERES_MATX"], units["ERES_MATX"]);
+            string method = GetValue<string>(data["ERES_METH"], units["ERES_METH"]);
+            DateTime analysisDate = GetValue<DateTime>(data["ERES_DTIM"], units["ERES_DTIM"]);
 
-            string description = GetValue<string>(text, "SPEC_DESC", headings, units);
-            string remarks = GetValue<string>(text, "ERES_REM", headings, units);
-            string testStatus = GetValue<string>(text, "TEST_STAT", headings, units);
+            string description = GetValue<string>(data["SPEC_DESC"], units["SPEC_DESC"]);
+            string remarks = GetValue<string>(data["ERES_REM"], units["ERES_REM"]);
+            string testStatus = GetValue<string>(data["TEST_STAT"], units["TEST_STAT"]);
 
             TestProperties testProperties = new TestProperties()
             {
@@ -107,17 +104,17 @@ namespace BH.Adapter.AGS
                 contaminantProperties.Add(testProperties);
 
             // Anaysis Properties
-            string totalOrDissolved = GetValue<string>(text, "ERES_TORD", headings, units);
-            string accreditingBody = GetValue<string>(text, "ERES_CRED", headings, units);
-            string labName = GetValue<string>(text, "ERES_LAB", headings, units);
-            double percentageRemoved = Convert.Units(GetValue<double>(text, "ERES_PERP", headings, units), "ERES_PERP", units);
-            double sizeRemoved = Convert.Units(GetValue<double>(text, "ERES_SIZE", headings, units), "ERES_SIZE", units);
-            string instrumentReference = GetValue<string>(text, "ERES_IREF", headings, units);
-            DateTime leachateDate = GetValue<DateTime>(text, "ERES_LDTM", headings, units);
-            string leachateMethod = GetValue<string>(text, "ERES_LMTH", headings, units);
-            int dilutionFactor = GetValue<int>(text, "ERES_DIL", headings, units);
-            string basis = GetValue<string>(text, "ERES_BAS", headings, units);
-            string location = GetValue<string>(text, "ERES_LOCN", headings, units);
+            string totalOrDissolved = GetValue<string>(data["ERES_TORD"], units["ERES_TORD"]);
+            string accreditingBody = GetValue<string>(data["ERES_CRED"], units["ERES_CRED"]);
+            string labName = GetValue<string>(data["ERES_LAB"], units["ERES_LAB"]);
+            double percentageRemoved = Convert.Units(GetValue<double>(data["ERES_PERP"], units["ERES_PERP"]), units["ERES_PERP"]);
+            double sizeRemoved = Convert.Units(GetValue<double>(data["ERES_SIZE"], units["ERES_SIZE"]), units["ERES_SIZE"]);
+            string instrumentReference = GetValue<string>(data["ERES_IREF"], units["ERES_IREF"]);
+            DateTime leachateDate = GetValue<DateTime>(data["ERES_LDTM"], units["ERES_LDTM"]);
+            string leachateMethod = GetValue<string>(data["ERES_LMTH"], units["ERES_LMTH"]);
+            int dilutionFactor = GetValue<int>(data["ERES_DIL"], units["ERES_DIL"]);
+            string basis = GetValue<string>(data["ERES_BAS"], units["ERES_BAS"]);
+            string location = GetValue<string>(data["ERES_LOCN"], units["ERES_LOCN"]);
 
             AnalysisProperties analysisProperties = new AnalysisProperties()
             {
@@ -137,21 +134,21 @@ namespace BH.Adapter.AGS
                 contaminantProperties.Add(analysisProperties);
 
             // Result Properties
-            string resultType = GetValue<string>(text, "ERES_RTCD", headings, units);
-            bool reportable = GetValue<bool>(text, "ERES_RRES", headings, units);
-            bool detectFlag = GetValue<bool>(text, "ERES_DETF", headings, units);
-            bool organic = GetValue<bool>(text, "ERES_ORG", headings, units);
+            string resultType = GetValue<string>(data["ERES_RTCD"], units["ERES_RTCD"]);
+            bool reportable = GetValue<bool>(data["ERES_RRES"], units["ERES_RRES"]);
+            bool detectFlag = GetValue<bool>(data["ERES_DETF"], units["ERES_DETF"]);
+            bool organic = GetValue<bool>(data["ERES_ORG"], units["ERES_ORG"]);
 
             ResultProperties resultProperties = new ResultProperties() { Organic = organic, Reportable = reportable, DetectFlag = detectFlag, Type = type };
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 
             // Detection Properties
-            double detectionLimit = Convert.Units(GetValue<double>(text, "ERES_RDLM", headings, units), "ERES_RDLM", units);
-            double methodDetectionLimit = Convert.Units(GetValue<double>(text, "ERES_MDLM", headings, units), "ERES_MDLM", units);
-            double quantificationLimit = Convert.Units(GetValue<double>(text, "ERES_QLM", headings, units), "ERES_QLM", units);
-            double ticProbability = Convert.Units(GetValue<double>(text, "ERES_TICP", headings, units), "ERES_TICP", units);
-            double ticRetention = Convert.Units(GetValue<double>(text, "ERES_TICT", headings, units), "ERES_TICT", units);
+            double detectionLimit = Convert.Units(GetValue<double>(data["ERES_RDLM"], units["ERES_RDLM"]), units["ERES_RDLM"]);
+            double methodDetectionLimit = Convert.Units(GetValue<double>(data["ERES_MDLM"], units["ERES_MDLM"]), units["ERES_MDLM"]);
+            double quantificationLimit = Convert.Units(GetValue<double>(data["ERES_QLM"], units["ERES_QLM"]), units["ERES_QLM"]);
+            double ticProbability = Convert.Units(GetValue<double>(data["ERES_TICP"], units["ERES_TICP"]), units["ERES_TICP"]);
+            double ticRetention = Convert.Units(GetValue<double>(data["ERES_TICT"], units["ERES_TICT"]), units["ERES_TICT"]);
 
             DetectionProperties detectionProperties = new DetectionProperties()
             {

@@ -35,81 +35,48 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static dynamic GetValue<T>(string text, string heading, Dictionary<string, int> headings, Dictionary<string, string> units)
+        private static T GetValue<T>(string text, string format)
         {
-            if (text == "")
-                return "";
+            object value = text;
 
-            int index = -1;
-            string value = "";
-
-            // Split using "," because commas can be used in the remarks
-            if (headings.TryGetValue(heading, out index))
-            {
-                if (index == -1)
-                {
-                    string section = heading.Split('_')[0];
-                    Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
-                }
-                else
-                {
-                    value = text.Split(new string[] { "\",\"" }, StringSplitOptions.None)[index].Replace("\"", "").Trim();
-
-                }
-            }
-            else
-            {
-                string section = heading.Split('_')[0];
-                Engine.Base.Compute.RecordError($"The heading {heading} was not present in the section {section}");
-            }
-
-            if (typeof(T) == typeof(string))
-            {
-                return value;
-            }
-            else if (typeof(T) == typeof(double))
+            if (typeof(T) == typeof(double))
             {
                 double number;
-                if (!double.TryParse(value, out number))
+                if (!double.TryParse(text, out number))
                     number = double.NaN;
 
-                return number;
+                value = number;
             }
             else if (typeof(T) == typeof(int))
             {
                 int number;
-                if (!int.TryParse(value, out number))
+                if (!int.TryParse(text, out number))
                     number = 0;
 
-                return number;
+                value = number;
             }
             else if (typeof(T) == typeof(DateTime))
             {
                 DateTime date;
-                string dateFormat = "";
-                units.TryGetValue(heading, out dateFormat);
-                if (dateFormat == "")
+                if (format == "")
                 {
-                    DateTime.TryParse(value, out date);
+                    DateTime.TryParse(text, out date);
                     date = default(DateTime);
                 }
                 else
                 {
-                    if (!DateTime.TryParseExact(value, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                         date = default(DateTime);
                 }
 
-                return date;
+                value = date;
             }
             else if (typeof(T) == typeof(bool))
             {
-                bool boolean = ParseYNString(value);
-                return boolean;
+                value = text == "Y" || text.ToLower() == "yes"; // This seems simpler that calling a method that is 
             }
-            else
-            {
-                return value;
-            }
+
+            return (T)value;
         }
 
         /***************************************************/

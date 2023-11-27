@@ -41,80 +41,21 @@ namespace BH.Adapter.AGS
 
         private List<Stratum> ReadStrata(List<string> ids = null)
         {
-            List<Stratum> strata = new List<Stratum>();
+            string groupKey = "GEOL";
 
-            List<string> sectionText = GetSectionText("GEOL");
-
-            if (sectionText.IsNullOrEmpty())
-                return strata;
-
-            List<string> unit = new List<string>();
-            string heading = "";
-            int dataIndex = -1;
-
-            // Determine where the section starts
-            for (int i = 0; i < sectionText.Count; i++)
+            if (!m_Data.ContainsKey(groupKey))
             {
-                string line = sectionText[i];
-                if (!(line.Length < 5))
-                {
-                    string group = line.Split(',')[0];
-                    if (group.Contains("\"HEADING\""))
-                    {
-                        heading = sectionText[i].Replace("\"", "");
-                    }
-                    else if (group.Contains("\"UNIT\""))
-                        unit.AddRange(line.Replace("\"", "").Split(','));
-                    else if (group.Contains("\"DATA\""))
-                    {
-                        dataIndex = i;
-                    }
-
-                    if (dataIndex != -1 && heading != "")
-                        break;
-                }
+                Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Stratum>();
             }
 
-            if (heading == "")
+            if (!m_Units.ContainsKey(groupKey))
             {
-                Compute.RecordError("The HEADING header is not present in the text file.");
-                return null;
-            }
-            if (dataIndex == -1)
-            {
-                Compute.RecordError("The DATA header is not present in the text file.");
-                return null;
+                Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Stratum>();
             }
 
-            List<string> split = heading.Split(',').ToList();
-
-            Dictionary<string, int> headingIndexes = new Dictionary<string, int>();
-            Dictionary<string, string> units = new Dictionary<string, string>();
-
-            List<string> parameterHeadings = new List<string>()
-            {
-                "LOCA_ID","GEOL_TOP", "GEOL_BASE", "GEOL_DESC", "GEOL_LEG","GEOL_GEOL", "GEOL_GEO2",
-                "GEOL_STAT", "GEOL_BGS", "FILE_FSET", "GEOL_REM"
-            };
-
-            foreach (string parameterHeading in parameterHeadings)
-            {
-                int index = GetHeadingIndex(parameterHeading, split);
-                headingIndexes.Add(parameterHeading, index);
-                if (index != -1)
-                    units.Add(parameterHeading, unit[index]);
-                else
-                    units.Add(parameterHeading, "");
-            }
-
-            for (int i = dataIndex; i < sectionText.Count; i++)
-            {
-                Stratum stratum = Convert.FromStratum(sectionText[i], headingIndexes, m_blankGeology, units);
-                if (stratum != null)
-                    strata.Add(stratum);
-            }
-
-            return strata;
+            return m_Data[groupKey].Select(data => Convert.FromStratum(data, m_Units[groupKey], m_blankGeology)).ToList();
         }
 
         /***************************************************/

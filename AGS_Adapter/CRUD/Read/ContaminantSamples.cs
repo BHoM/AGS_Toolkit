@@ -41,82 +41,21 @@ namespace BH.Adapter.AGS
 
         private List<ContaminantSample> ReadContaminantSamples(List<string> ids = null)
         {
-            List<ContaminantSample> contaminantSamples = new List<ContaminantSample>();
+            string groupKey = "ERES";
 
-            List<string> sectionText = GetSectionText("ERES");
-
-            if (sectionText.IsNullOrEmpty())
-                return contaminantSamples;
-
-            List<string> unit = new List<string>();
-            string heading = "";
-            int dataIndex = -1;
-
-            // Determine where the section starts
-            for (int i = 0; i < sectionText.Count; i++)
+            if (!m_Data.ContainsKey(groupKey))
             {
-                string line = sectionText[i];
-                if (!(line.Length < 5))
-                {
-                    string group = line.Split(',')[0];
-                    if (group.Contains("\"HEADING\""))
-                    {
-                        heading = sectionText[i].Replace("\"", "");
-                    }
-                    else if (group.Contains("\"UNIT\""))
-                        unit.AddRange(line.Replace("\"", "").Split(','));
-                    else if (group.Contains("\"DATA\""))
-                    {
-                        dataIndex = i;
-                    }
-
-                    if (dataIndex != -1 && heading != "")
-                        break;
-                }
+                Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
+                return new List<ContaminantSample>();
             }
 
-            if (heading == "")
+            if (!m_Units.ContainsKey(groupKey))
             {
-                Compute.RecordError("The HEADING header is not present in the text file.");
-                return null;
-            }
-            if (dataIndex == -1)
-            {
-                Compute.RecordError("The DATA header is not present in the text file.");
-                return null;
+                Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
+                return new List<ContaminantSample>();
             }
 
-            List<string> split = heading.Split(',').ToList();
-
-            Dictionary<string, int> headingIndexes = new Dictionary<string, int>();
-            Dictionary<string, string> units = new Dictionary<string, string>();
-
-            List<string> parameterHeadings = new List<string>()
-            {
-                "LOCA_ID","SAMP_TOP","SAMP_REF","SAMP_TYPE","SAMP_ID","SPEC_REF","SPEC_DPTH","ERES_CODE","ERES_METH","ERES_MATX","ERES_RTYP","ERES_TESN","ERES_NAME",
-                "ERES_TNAM","ERES_RVAL", "ERES_RUNI", "ERES_RTCD","ERES_RRES","ERES_DETF","ERES_ORG","ERES_RDLM","ERES_MDLM","ERES_QLM",
-                "ERES_DUNI","ERES_TICP","ERES_TICT","ERES_RDAT","ERES_SGRP","SPEC_PREP","SPEC_DESC","ERES_DTIM","ERES_TEST","ERES_TORD","ERES_LOCN","ERES_BAS","ERES_DIL",
-                "ERES_LMTH","ERES_LDTM","ERES_IREF","ERES_SIZE","ERES_PERP","ERES_REM","ERES_LAB","ERES_CRED","TEST_STAT","FILE_FSET"
-            };
-
-            foreach (string parameterHeading in parameterHeadings)
-            {
-                int index = GetHeadingIndex(parameterHeading, split);
-                headingIndexes.Add(parameterHeading, index);
-                if (index != -1)
-                    units.Add(parameterHeading, unit[index]);
-                else
-                    units.Add(parameterHeading, "");
-            }
-
-            for (int i = dataIndex; i < sectionText.Count; i++)
-            {
-                ContaminantSample contaminantSample = Convert.FromContaminantSample(sectionText[i], headingIndexes, units);
-                if (contaminantSample != null)
-                    contaminantSamples.Add(contaminantSample);
-            }
-
-            return contaminantSamples;
+            return m_Data[groupKey].Select(data => Convert.FromContaminantSample(data, m_Units[groupKey])).ToList();
         }
 
         /***************************************************/

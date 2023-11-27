@@ -30,6 +30,12 @@
     <Reference Include="BHoM_Engine">
       <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
     </Reference>
+    <Reference Include="Ground_Engine">
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Ground_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Ground_oM">
+      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Ground_oM.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

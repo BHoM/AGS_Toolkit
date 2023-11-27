@@ -57,7 +57,7 @@ namespace BH.Adapter.AGS
             }
             else if (typeof(T) == typeof(bool))
             {
-                value = text == "Y" || text.ToLower() == "yes"; // This seems simpler that calling a method that is 
+                value = text == "Y" || text.ToLower() == "yes";
             }
 
             return (T)value;

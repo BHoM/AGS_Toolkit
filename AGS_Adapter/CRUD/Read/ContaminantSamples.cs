@@ -55,7 +55,7 @@ namespace BH.Adapter.AGS
                 return new List<ContaminantSample>();
             }
 
-            return m_Data[groupKey].Select(data => Convert.FromContaminantSample(data, m_Units[groupKey])).ToList();
+            return m_Data[groupKey].Select(data => Convert.FromContaminantSample(data, m_Units[groupKey])).Where(sample => sample != null).ToList();
         }
 
         /***************************************************/

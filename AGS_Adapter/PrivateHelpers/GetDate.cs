@@ -35,32 +35,22 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static T GetValue<T>(string text)
+        private static DateTime GetDateTime(string text, string format)
         {
-            object value = text;
 
-            if (typeof(T) == typeof(double))
+            DateTime date;
+            if (format == "")
             {
-                double number;
-                if (!double.TryParse(text, out number))
-                    number = double.NaN;
-
-                value = number;
+                DateTime.TryParse(text, out date);
+                date = default(DateTime);
             }
-            else if (typeof(T) == typeof(int))
+            else
             {
-                int number;
-                if (!int.TryParse(text, out number))
-                    number = 0;
-
-                value = number;
-            }
-            else if (typeof(T) == typeof(bool))
-            {
-                value = text == "Y" || text.ToLower() == "yes"; // This seems simpler that calling a method that is 
+                if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    date = default(DateTime);
             }
 
-            return (T)value;
+            return date;
         }
 
         /***************************************************/

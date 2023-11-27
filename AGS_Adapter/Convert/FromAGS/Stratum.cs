@@ -36,9 +36,9 @@ namespace BH.Adapter.AGS
         /***************************************************/
         public static Stratum FromStratum(Dictionary<string, string> data, Dictionary<string, string> units, string blankGeology)
         {
-            string id = GetValue<string>(data["LOCA_ID"], units["LOCA_ID"]);
-            double top = Convert.Units(GetValue<double>(data["GEOL_TOP"], units["GEOL_TOP"]), units["GEOL_TOP"]);
-            double bottom = Convert.Units(GetValue<double>(data["GEOL_BASE"], units["GEOL_BASE"]), units["GEOL_BASE"]);
+            string id = GetValue<string>(data["LOCA_ID"]);
+            double top = Convert.Units(GetValue<double>(data["GEOL_TOP"]), units["GEOL_TOP"]);
+            double bottom = Convert.Units(GetValue<double>(data["GEOL_BASE"]), units["GEOL_BASE"]);
 
             if (double.IsNaN(top) || double.IsNaN(bottom))
             {
@@ -49,22 +49,22 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
-            string observedGeology = GetValue<string>(data["GEOL_GEOL"], units["GEOL_GEOL"]);
+            string observedGeology = GetValue<string>(data["GEOL_GEOL"]);
             if (observedGeology == "")
                 observedGeology = blankGeology;
 
-            string interpretedGeology = GetValue<string>(data["GEOL_GEO2"], units["GEOL_GEO2"]);
-            string legend = GetValue<string>(data["GEOL_LEG"], units["GEOL_LEG"]);
+            string interpretedGeology = GetValue<string>(data["GEOL_GEO2"]);
+            string legend = GetValue<string>(data["GEOL_LEG"]);
             if (legend == "")
                 Engine.Base.Compute.RecordWarning($"No legend code provided for {id}.");
-            string description = GetValue<string>(data["GEOL_DESC"], units["GEOL_DESC"]);
+            string description = GetValue<string>(data["GEOL_DESC"]);
 
             List<IStratumProperty> stratumProperties = new List<IStratumProperty>();
 
-            string strataRef = GetValue<string>(data["GEOL_STAT"], units["GEOL_STAT"]);
-            string lexiconCode = GetValue<string>(data["GEOL_STAT"], units["GEOL_STAT"]);
-            string references = GetValue<string>(data["FILE_FSET"], units["FILE_FSET"]);
-            string remarks = GetValue<string>(data["GEOL_REM"], units["GEOL_REM"]);
+            string strataRef = GetValue<string>(data["GEOL_STAT"]);
+            string lexiconCode = GetValue<string>(data["GEOL_STAT"]);
+            string references = GetValue<string>(data["FILE_FSET"]);
+            string remarks = GetValue<string>(data["GEOL_REM"]);
 
             StratumReference reference = new StratumReference() {Remarks = remarks, LexiconCode = lexiconCode, Name = strataRef, Files = references };
             if (reference != null)

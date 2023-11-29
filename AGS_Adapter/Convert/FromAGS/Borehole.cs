@@ -123,13 +123,13 @@ namespace BH.Adapter.AGS
                 boreholeProperties.Add(location);
 
             // BoreholeReference
-            DateTime startDate = GetDateTime(data["LOCA_STAR"],units["LOCA_STAR"]);
+            DateTime startDate = GetDateTime(data["LOCA_STAR"], units["LOCA_STAR"]);
             DateTime endDate = GetDateTime(data["LOCA_ENDD"], units["LOCA_ENDD"]);
 
             string file = GetValue<string>(data["FILE_FSET"]);
-            string originalId = GetValue<string >(data["LOCA_ORID"]);
-            string originalReference = GetValue<string>(data["LOCA_ORJO"]);
-            string originalCompany = GetValue<string>(data["LOCA_ORCO"]);
+            string originalId = "";  /*GetValue<string >(data["LOCA_ORID"]);*/
+            string originalReference = "";/*GetValue<string>(data["LOCA_ORJO"]);*/
+            string originalCompany = ""; /*GetValue<string>(data["LOCA_ORCO"]);*/
 
             BoreholeReference boreholeReference = new BoreholeReference(){ StartDate = startDate, EndDate = endDate, File = file, OriginalId = originalId, OriginalReference = originalReference, 
                 OriginalCompany = originalCompany};

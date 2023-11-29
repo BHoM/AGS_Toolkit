@@ -28,13 +28,19 @@
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="BHoM_Engine">
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Ground_Engine">
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Ground_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Ground_Engine.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Ground_oM">
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Ground_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Ground_oM.dll</HintPath>
+      <SpecificVersion>false</SpecificVersion>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
 

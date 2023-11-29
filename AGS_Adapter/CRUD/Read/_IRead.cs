@@ -43,18 +43,11 @@ namespace BH.Adapter.AGS
         protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
         {
             if (type == typeof(Borehole))
-                return ReadBoreholes(ids as dynamic);
+                return ReadBoreholes();
             if (type == typeof(Stratum))
-                return ReadStrata(ids as dynamic);
-            // Preferrably, different Create logic for different object types should go in separate methods.
-            // We achieve this by using the ICreate method to only dynamically dispatching to *type-specific Create implementations*
-            // In other words:
-            // if (type == typeof(SomeType1))
-            //     return ReadSomeType1(ids as dynamic);
-            // else if (type == typeof(SomeType2))
-            //     return ReadSomeType2(ids as dynamic);
-            // else if (type == typeof(SomeType3))
-            //     return ReadSomeType3(ids as dynamic);
+                return ReadStrata();
+            if (type == typeof(ContaminantSample))
+                return ReadContaminantSamples();
 
             return new List<IBHoMObject>();
         }

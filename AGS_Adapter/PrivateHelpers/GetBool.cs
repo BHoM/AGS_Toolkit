@@ -35,32 +35,9 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static T GetValue<T>(string text)
+        private static bool GetBool(string text)
         {
-            object value = text;
-
-            if (typeof(T) == typeof(double))
-            {
-                double number;
-                if (!double.TryParse(text, out number))
-                    number = double.NaN;
-
-                value = number;
-            }
-            else if (typeof(T) == typeof(int))
-            {
-                int number;
-                if (!int.TryParse(text, out number))
-                    number = 0;
-
-                value = number;
-            }
-            else if (typeof(T) == typeof(bool))
-            {
-                value = text == "Y" || text.ToLower() == "yes";
-            }
-
-            return (T)value;
+                return text.ToLower() == "y" || text.ToLower() == "yes" ? true : false;
         }
 
         /***************************************************/

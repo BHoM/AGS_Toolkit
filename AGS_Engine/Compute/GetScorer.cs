@@ -44,7 +44,7 @@ namespace BH.Engine.Adapters.AGS
         [Description("Returns the scorer method to be used in FuzzyMatching methods.")]
         [Input("scorer", "The scorer input type")]
         [Output("o", "The scorer method.")]
-        public static IRatioScorer GetScorer(Scorer scorer)
+        private static IRatioScorer GetScorer(Scorer scorer)
         {
             switch (scorer)
             {

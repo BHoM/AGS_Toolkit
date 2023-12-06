@@ -101,11 +101,7 @@ namespace BH.Adapter.AGS
         private Dictionary<string, List<Dictionary<string, string>>> m_Data = new Dictionary<string, List<Dictionary<string, string>>>();
         private Dictionary<string, Dictionary<string, string>> m_Units = new Dictionary<string, Dictionary<string, string>>();
         private AGSSettings m_Settings = null;
-
-        private List<string> m_ags;
         private string m_blankGeology;
-        private List<string> m_headings = new List<string>();
-        private List<int> m_headingIndexes = new List<int>();
 
         /***************************************************/
     }

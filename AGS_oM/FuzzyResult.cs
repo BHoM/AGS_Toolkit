@@ -32,7 +32,7 @@ using BH.oM.Base;
 namespace BH.oM.Adapters.AGS
 {
     [Description("The base interface for the Fuzzy results.")]
-    public interface IFuzzyResult : IBHoMObject
+    public interface IFuzzyResult : IBHoMObject, IImmutable
     {
         /***************************************************/
         /****            Public Properties              ****/

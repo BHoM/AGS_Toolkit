@@ -47,10 +47,8 @@ namespace BH.Engine.Adapters.AGS
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("n", "Number of values to return.")]
-        [MultiOutput(1, "v", "The top n strings with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The top n highest ratios between the query and choices.")]
-        [MultiOutput(3, "i", "The top n indexes of the highest scores from the choices.")]
-        public static Output<List<string>, List<int>, List<int>> ExtractTop(string query, IEnumerable<string> choices, int n)
+        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
+        public static FuzzyStringResult ExtractTop(string query, IEnumerable<string> choices, int n)
         {
             return ExtractTop(query, choices, Scorer.DefaultRatioScorer, n);
         }
@@ -62,22 +60,20 @@ namespace BH.Engine.Adapters.AGS
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Input("n", "Number of values to return.")]
-        [MultiOutput(1, "v", "The top n strings with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The top n highest ratios between the query and choices.")]
-        [MultiOutput(3, "i", "The top n indexes of the highest scores from the choices.")]
-        public static Output<List<string>, List<int>, List<int>> ExtractTop(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer, int n = 1)
+        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
+        public static FuzzyStringResult ExtractTop(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer, int n = 1)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
                 scorerMethod = GetScorer(scorer);
 
             IEnumerable<ExtractedResult<string>> result = Process.ExtractTop(query, choices.ToArray(), s => s, scorerMethod, n);
-            return new Output<List<string>, List<int>, List<int>>()
-            {
-                Item1 = result.Select(x => x.Value).ToList(),
-                Item2 = result.Select(x => x.Score).ToList(),
-                Item3 = result.Select(x => x.Index).ToList(),
-            };
+            return new FuzzyStringResult
+            (
+                result.Select(x => x.Value).ToList(),
+                result.Select(x => x.Score).ToList(),
+                result.Select(x => x.Index).ToList()
+            );
         }
 
         /***************************************************/
@@ -88,10 +84,8 @@ namespace BH.Engine.Adapters.AGS
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Input("n", "Number of values to return.")]
-        [MultiOutput(1, "v", "The top n BHoMObjects with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The top n highest ratios between the query and choices.")]
-        [MultiOutput(3, "i", "The top n indexes of the highest scores from the choices.")]
-        public static Output<List<BHoMObject>, List<int>, List<int>> ExtractTop(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer, int n = 1)
+        [Output("result", "A FuzzyObjectResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
+        public static FuzzyObjectResult ExtractTop(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer, int n = 1)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
@@ -105,12 +99,12 @@ namespace BH.Engine.Adapters.AGS
             foreach (int i in result.Select(x => x.Index))
                 resultObjects.Add(objects[i]);
 
-            return new Output<List<BHoMObject>, List<int>, List<int>>()
-            {
-                Item1 = resultObjects,
-                Item2 = result.Select(x => x.Score).ToList(),
-                Item3 = result.Select(x => x.Index).ToList()
-            };
+            return new FuzzyObjectResult
+            (
+                resultObjects,
+                result.Select(x => x.Score).ToList(),
+                result.Select(x => x.Index).ToList()
+            );
         }
 
         /***************************************************/

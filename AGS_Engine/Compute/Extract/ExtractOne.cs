@@ -40,10 +40,8 @@ namespace BH.Engine.Adapters.AGS
         [Description("Extracts the value with the highest score when comparing the query to the choices. The method uses the weighted ratio and full process.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
-        [MultiOutput(1, "v", "The string with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The highest ratio between the query and choices.")]
-        [MultiOutput(3, "i", "The index of the highest score from the choices.")]
-        public static Output<string, int, int> ExtractOne(string query, IEnumerable<string> choices)
+        [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
+        public static FuzzyStringResult ExtractOne(string query, IEnumerable<string> choices)
         {
             return ExtractOne(query, choices, Scorer.DefaultRatioScorer);
         }
@@ -54,19 +52,17 @@ namespace BH.Engine.Adapters.AGS
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [MultiOutput(1, "v", "The string with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The highest ratio between the query and choices.")]
-        [MultiOutput(3, "i", "The index of the highest score from the choices.")]
-        public static Output<string, int, int> ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
+        public static FuzzyStringResult ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-            Output<List<string>, List<int>, List<int>> result = ExtractTop(query, choices, scorer);
+           FuzzyStringResult result = ExtractTop(query, choices, scorer);
 
-            return new Output<string, int, int>()
-            {
-                Item1 = result.Item1.First(),
-                Item2 = result.Item2.First(),
-                Item3 = result.Item3.First(),
-            };
+            return new FuzzyStringResult
+            (
+                new List<string>() { result.Results.First()},
+                new List<int>() { result.Scores.First() },
+                new List<int>() { result.Indexes.First() }
+            );
         }
 
         /***************************************************/
@@ -76,19 +72,17 @@ namespace BH.Engine.Adapters.AGS
         [Input("objects", "A list of BHoMObjects to compare the query against.")]
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [MultiOutput(1, "v", "The string with the highest score from the choices.")]
-        [MultiOutput(2, "s", "The highest ratio between the query and choices.")]
-        [MultiOutput(3, "i", "The index of the highest score from the choices.")]
-        public static Output<BHoMObject, int, int> ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        [Output("result", "A FuzzyObjectResult containing the object, score and index resulting from the fuzzy matching algorithm.")]
+        public static FuzzyObjectResult ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-            Output<List<BHoMObject>, List<int>, List<int>> result = ExtractTop(query, objects, propertyName, scorer);
+            FuzzyObjectResult result = ExtractTop(query, objects, propertyName, scorer);
 
-            return new Output<BHoMObject, int, int>()
-            {
-                Item1 = result.Item1.First(),
-                Item2 = result.Item2.First(),
-                Item3 = result.Item3.First(),
-            };
+            return new FuzzyObjectResult
+            (
+                new List<BHoMObject>() { result.Results.First() },
+                new List<int>() { result.Scores.First() },
+                new List<int>() { result.Indexes.First() }
+            );
         }
 
         /***************************************************/

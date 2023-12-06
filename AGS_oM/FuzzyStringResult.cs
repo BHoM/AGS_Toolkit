@@ -32,20 +32,31 @@ using BH.oM.Base;
 namespace BH.oM.Adapters.AGS
 {
     [Description("A result class containing strings, scores and indexes from the fuzzy matching.")]
-    public class FuzzyStringResult : BHoMObject, IFuzzyResult
+    public class FuzzyStringResult : BHoMObject, IFuzzyResult, IImmutable
     {
         /***************************************************/
         /****            Public Properties              ****/
         /***************************************************/
 
-        [Description("A list of strings resulting from the fuzzy matching algorithim.")]
+        [Description("A list of strings resulting from the fuzzy matching algorithm.")]
         public virtual List<string> Results { get; }
 
-        [Description("A list of scores resulting from the fuzzy matching algorithim.")]
+        [Description("A list of scores resulting from the fuzzy matching algorithm.")]
         public virtual List<int> Scores { get; }
 
-        [Description("A list of indexes resulting from the fuzzy matching algorithim.")]
+        [Description("A list of indexes resulting from the fuzzy matching algorithm.")]
         public virtual List<int> Indexes { get; }
+
+        /***************************************************/
+        /****            Constructor                    ****/
+        /***************************************************/
+
+        public FuzzyStringResult(List<string> results, List<int> scores, List<int> indexes)
+        {
+            Results = results;
+            Scores = scores;
+            Indexes = indexes;
+        }
 
         /***************************************************/
     }

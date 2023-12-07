@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
 {
@@ -35,8 +35,23 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static DateTime GetDateTime(string text, string format)
+        private static DateTime GetDateTime(Dictionary<string, string> data, Dictionary<string, string> units, string heading)
         {
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return default(DateTime);
+            }
+
+            string text = data[heading];
+
+            if (!units.ContainsKey(heading))
+            {
+                Compute.RecordError($"The units for {heading} was not found within the data.");
+                return default(DateTime);
+            }
+
+            string format = units[heading];
 
             DateTime date;
             if (format == "")

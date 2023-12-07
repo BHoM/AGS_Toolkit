@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
 {
@@ -35,11 +35,22 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static int GetInt(string text)
+        private static int GetInt(Dictionary<string, string> data, Dictionary<string, string> units, string heading)
         {
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return 0;
+            }
+
+            string text = data[heading];
+
             int number;
             if (!int.TryParse(text, out number))
                 number = 0;
+
+            if (number != 0)
+                Convert.Units(number, units[heading]);
 
             return number;
         }

@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using BH.Engine.Base;
 using BH.oM.Quantities.Attributes;
 
 namespace BH.Adapter.AGS
@@ -35,11 +36,22 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static double GetDouble(string text)
+        private static double GetDouble(Dictionary<string, string> data, Dictionary<string, string> units, string heading)
         {
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return double.NaN;
+            }
+
+            string text = data[heading];
+
             double number;
             if (!double.TryParse(text, out number))
                 number = double.NaN;
+
+            if (number != double.NaN)
+                Convert.Units(number, units[heading]);
 
             return number;
 

@@ -36,10 +36,10 @@ namespace BH.Adapter.AGS
         /***************************************************/
         public static Stratum FromStratum(Dictionary<string, string> data, Dictionary<string, string> units, string blankGeology)
         {
-            string id = data["LOCA_ID"];
+            string id = GetString(data, "LOCA_ID");
 
-            double top = Convert.Units(GetDouble(data["GEOL_TOP"]), units["GEOL_TOP"]);
-            double bottom = Convert.Units(GetDouble(data["GEOL_BASE"]), units["GEOL_BASE"]);
+            double top = GetDouble(data, units, "GEOL_TOP");
+            double bottom = GetDouble(data, units, "GEOL_BASE");
 
             if (double.IsNaN(top) || double.IsNaN(bottom))
             {
@@ -50,28 +50,28 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
-            string observedGeology = data["GEOL_GEOL"];
+            string observedGeology = GetString(data, "GEOL_GEOL");
             if (observedGeology == "")
                 observedGeology = blankGeology;
 
-            string interpretedGeology = data["GEOL_GEO2"];
-            string legend = data["GEOL_LEG"];
+            string interpretedGeology = GetString(data, "GEOL_GEO2");
+            string legend = GetString(data, "GEOL_LEG");
             if (legend == "")
                 Engine.Base.Compute.RecordWarning($"No legend code provided for {id}.");
-            string description = data["GEOL_DESC"];
+            string description = GetString(data, "GEOL_DESC");
 
             List<IStratumProperty> stratumProperties = new List<IStratumProperty>();
 
-            string strataRef = data["GEOL_STAT"];
-            string lexiconCode = data["GEOL_STAT"];
-            string references = data["FILE_FSET"];
-            string remarks = data["GEOL_REM"];
+            string strataRef = GetString(data, "GEOL_STAT");
+            string lexiconCode = GetString(data, "GEOL_STAT");
+            string references = GetString(data, "FILE_FSET");
+            string remarks = GetString(data, "GEOL_REM");
 
-            StratumReference reference = new StratumReference() {Remarks = remarks, LexiconCode = lexiconCode, Name = strataRef, Files = references };
+            StratumReference reference = new StratumReference() { Remarks = remarks, LexiconCode = lexiconCode, Name = strataRef, Files = references };
             if (reference != null)
                 stratumProperties.Add(reference);
 
-            Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "" , blankGeology, stratumProperties);
+            Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "", blankGeology, stratumProperties);
 
             strata.Name = strataRef;
 

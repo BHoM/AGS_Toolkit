@@ -74,6 +74,8 @@ namespace BH.Adapter.AGS
                 // Dimensionless
                 case "%":
                     return value;
+                case "":
+                    return value;
                 default:
                     Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {key}.");
                     return value;
@@ -85,6 +87,3 @@ namespace BH.Adapter.AGS
 
     }
 }
-
-
-

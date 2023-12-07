@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
 {
@@ -35,9 +35,17 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool GetBool(string text)
+        private static bool GetBool(Dictionary<string, string> data, string heading)
         {
-                return text.ToLower() == "y" || text.ToLower() == "yes" ? true : false;
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return false;
+            }
+
+            string text = data[heading];
+
+            return text.ToLower() == "y" || text.ToLower() == "yes" ? true : false;
         }
 
         /***************************************************/

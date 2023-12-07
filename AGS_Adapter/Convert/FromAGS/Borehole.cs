@@ -43,34 +43,34 @@ namespace BH.Adapter.AGS
         public static Borehole FromBorehole(Dictionary<string, string> data, Dictionary<string, string> units, List<Stratum> strata,
             List<ContaminantSample> contaminantSamples)
         {
-            string id = data["LOCA_ID"];
+            string id = GetString(data, "LOCA_ID");
 
-            if(id == "")
+            if (id == "")
                 Engine.Base.Compute.RecordWarning("No valid id found for the Borehole.");
 
-            double eastingTop = Convert.Units(GetDouble(data["LOCA_NATE"]), units["LOCA_NATE"]);
-            double northingTop = Convert.Units(GetDouble(data["LOCA_NATN"]), units["LOCA_NATN"]);
-            double topLevel = Convert.Units(GetDouble(data["LOCA_GL"]), units["LOCA_GL"]);
-            double eastingBot = Convert.Units(GetDouble(data["LOCA_ETRV"]), units["LOCA_ETRV"]);
-            double northingBot = Convert.Units(GetDouble(data["LOCA_NTRV"]), units["LOCA_NTRV"]);
-            double botDepth = Convert.Units(GetDouble(data["LOCA_FDEP"]), units["LOCA_FDEP"]);
+            double eastingTop = GetDouble(data, units, "LOCA_NATE");
+            double northingTop = GetDouble(data, units, "LOCA_NATN");
+            double topLevel = GetDouble(data, units, "LOCA_GL");
+            double eastingBot = GetDouble(data, units, "LOCA_ETRV");
+            double northingBot = GetDouble(data, units, "LOCA_NTRV");
+            double botDepth = GetDouble(data, units, "LOCA_FDEP");
 
             double eastingTopLocal = double.NaN;
             double northingTopLocal = double.NaN;
 
-            if(double.IsNaN(eastingTop) || double.IsNaN(northingTop))
+            if (double.IsNaN(eastingTop) || double.IsNaN(northingTop))
             {
-                eastingTopLocal = Convert.Units(GetDouble(data["LOCA_LOCX"]), units["LOCA_LOCX"]);
-                northingTopLocal = Convert.Units(GetDouble(data["LOCA_LOCY"]), units["LOCA_LOCY"]);
-                if (double.IsNaN(eastingTopLocal)  && double.IsNaN(northingTopLocal))
+                eastingTopLocal = GetDouble(data, units, "LOCA_LOCX");
+                northingTopLocal = GetDouble(data, units, "LOCA_LOCY");
+                if (double.IsNaN(eastingTopLocal) && double.IsNaN(northingTopLocal))
                 {
                     Engine.Base.Compute.RecordWarning($"No valid coordinates are found for the top of the borehole {id}.");
                 }
             }
             else if (double.IsNaN(eastingBot) || double.IsNaN(northingBot))
             {
-                double eastingBotLocal = Convert.Units(GetDouble(data["LOCA_XTRL"]), units["LOCA_XTRL"]);
-                double northingBotLocal = Convert.Units(GetDouble(data["LOCA_YTRL"]), units["LOCA_YTRL"]);
+                double eastingBotLocal = GetDouble(data, units, "LOCA_XTRL");
+                double northingBotLocal = GetDouble(data, units, "LOCA_YTRL");
                 if (double.IsNaN(eastingBotLocal) && double.IsNaN(northingBotLocal))
                 {
                     Engine.Base.Compute.RecordWarning("No valid coordinates are found for the bottom of the borehole. Therefore, the borehole is assumed straight.");
@@ -99,40 +99,47 @@ namespace BH.Adapter.AGS
             List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
 
             // Methodology
-            string type = data["LOCA_TYPE"];
-            string status = data["LOCA_STAT"];
-            string remarks = data["LOCA_REM"];
-            string purpose = data["LOCA_PURP"];
-            string termination = data["LOCA_TERM"];
+            string type = GetString(data, "LOCA_TYPE");
+            string status = GetString(data, "LOCA_STAT");
+            string remarks = GetString(data, "LOCA_REM");
+            string purpose = GetString(data, "LOCA_PURP");
+            string termination = GetString(data, "LOCA_TERM");
 
             Methodology methodology = new Methodology() { Type = type, Status = status, Remarks = remarks, Purpose = purpose, Termination = termination };
             if (methodology != null)
                 boreholeProperties.Add(methodology);
 
             // Location
-            string method = data["LOCA_LOCM"];
-            string subDivision = data["LOCA_LOCA"];
-            string phase = data["LOCA_CLST"];
-            string alignment = data["LOCA_ALID"];
-            double offset = Convert.Units(GetDouble(data["LOCA_OFFS"]), units["LOCA_OFFS"]);
-            string chainage = data["LOCA_CNGE"];
-            string algorithim = data["LOCA_TRAN"];
+            string method = GetString(data, "LOCA_LOCM");
+            string subDivision = GetString(data, "LOCA_LOCA");
+            string phase = GetString(data, "LOCA_CLST");
+            string alignment = GetString(data, "LOCA_ALID");
+            double offset = GetDouble(data, units, "LOCA_OFFS");
+            string chainage = GetString(data, "LOCA_CNGE");
+            string algorithim = GetString(data, "LOCA_TRAN");
 
             Location location = new Location() { Method = method, SubDivision = subDivision, Phase = phase, Alignment = alignment, Offset = offset, Chainage = chainage, Algorithm = algorithim };
             if (location != null)
                 boreholeProperties.Add(location);
 
             // BoreholeReference
-            DateTime startDate = GetDateTime(data["LOCA_STAR"], units["LOCA_STAR"]);
-            DateTime endDate = GetDateTime(data["LOCA_ENDD"], units["LOCA_ENDD"]);
+            DateTime startDate = GetDateTime(data, units, "LOCA_STAR");
+            DateTime endDate = GetDateTime(data, units, "LOCA_ENDD");
 
-            string file = data["FILE_FSET"];
-            string originalId = "";  /*GetValue<string >(data["LOCA_ORID"]);*/
-            string originalReference = "";/*data["LOCA_ORJO"]);*/
-            string originalCompany = ""; /*data["LOCA_ORCO"]);*/
+            string file = GetString(data, "FILE_FSET");
+            string originalId = GetString(data, "LOCA_ORID");
+            string originalReference = GetString(data, "LOCA_ORJO");
+            string originalCompany = GetString(data, "LOCA_ORCO");
 
-            BoreholeReference boreholeReference = new BoreholeReference(){ StartDate = startDate, EndDate = endDate, File = file, OriginalId = originalId, OriginalReference = originalReference, 
-                OriginalCompany = originalCompany};
+            BoreholeReference boreholeReference = new BoreholeReference()
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                File = file,
+                OriginalId = originalId,
+                OriginalReference = originalReference,
+                OriginalCompany = originalCompany
+            };
 
             if (boreholeReference != null)
                 boreholeProperties.Add(boreholeReference);

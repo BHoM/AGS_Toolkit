@@ -20,28 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using BH.Engine.Base;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Adapter.AGS
 {
-    public partial class AGSAdapter
+    public static partial class Convert
     {
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private int GetHeadingIndex(string heading, List<string> headings)
+        public static string GetString(Dictionary<string, string> data, string heading)
         {
-            int index = headings.IndexOf(heading);
-            if (index == -1)
+            if (!data.ContainsKey(heading))
             {
-                Engine.Base.Compute.RecordWarning($"The heading {heading} was not found.");
-                return -1;
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return "";
             }
 
-            return index;
+            return data[heading];
+
         }
 
         /***************************************************/

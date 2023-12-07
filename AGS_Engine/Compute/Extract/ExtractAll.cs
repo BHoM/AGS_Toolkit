@@ -49,7 +49,7 @@ namespace BH.Engine.Adapters.AGS
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
         [Output("result", "A FuzzyResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<FuzzyResult<string>> ExtractAll(string query, IEnumerable<string> choices, int cutOff = 0, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static List<FuzzyResult<string>> ExtractAll(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer, int cutOff = 0)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)

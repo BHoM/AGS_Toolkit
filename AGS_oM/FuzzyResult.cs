@@ -32,7 +32,7 @@ using BH.oM.Analytical.Results;
 namespace BH.oM.Adapters.AGS
 {
     [Description("A result class containing objects, scores and indexes from the fuzzy matching.")]
-    public class FuzzyResult<T> : IResult
+    public class FuzzyResult<T> : IResult, IImmutable
     {
         /***************************************************/
         /****            Public Properties              ****/

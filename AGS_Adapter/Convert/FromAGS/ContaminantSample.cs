@@ -112,7 +112,7 @@ namespace BH.Adapter.AGS
             string instrumentReference = GetString(data, "ERES_IREF");
             DateTime leachateDate = GetDateTime(data, units, "ERES_LDTM");
             string leachateMethod = GetString(data, "ERES_LMTH");
-            int dilutionFactor = GetInt(data, units, "ERES_DIL");
+            int dilutionFactor = GetInt(data, "ERES_DIL");
             string basis = GetString(data, "ERES_BAS");
             string location = GetString(data, "ERES_LOCN");
 

@@ -51,7 +51,7 @@ namespace BH.Adapter.AGS
                 number = double.NaN;
 
             if (number != double.NaN)
-                Convert.Units(number, units[heading]);
+                number = Convert.Units(number, units[heading]);
 
             return number;
 

@@ -35,7 +35,7 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static int GetInt(Dictionary<string, string> data, Dictionary<string, string> units, string heading)
+        private static int GetInt(Dictionary<string, string> data, string heading)
         {
             if (!data.ContainsKey(heading))
             {
@@ -48,9 +48,6 @@ namespace BH.Adapter.AGS
             int number;
             if (!int.TryParse(text, out number))
                 number = 0;
-
-            if (number != 0)
-                Convert.Units(number, units[heading]);
 
             return number;
         }

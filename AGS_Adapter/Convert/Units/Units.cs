@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
             if (double.IsNaN(value))
                 return value;
 
-            switch (unit.ToLower())
+            switch (unit.Trim().ToLower())
             {
                 // Length
                 case "m":
@@ -53,9 +53,12 @@ namespace BH.Adapter.AGS
                 case "in":
                     return value.FromInch();
                 // Density
-                case "mg/L":
+                case "ug/l":
+                case "μg/l":
+                    return value.FromMicrogramPerLitre();
+                case "mg/l":
                     return value.FromMilligramPerLitre();
-                case "g/L":
+                case "g/l":
                     return value.FromGramPerLitre();
                 //MassFraction
                 case "mg/kg":
@@ -67,14 +70,22 @@ namespace BH.Adapter.AGS
                     return value.FromGramPerKilogram();
                 case "kg/kg":
                     return value;
+                //Volume
+                case "l":
+                    return value.FromLitre();
+                //Mass 
+                case "kg":
+                    return value;
                 // Time
                 case "s":
                     return value;
-
                 // Dimensionless
                 case "%":
-                    return value;
                 case "":
+                case "-":
+                case "--":
+                case "---":
+                case "pH":
                     return value;
                 default:
                     Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {key}.");

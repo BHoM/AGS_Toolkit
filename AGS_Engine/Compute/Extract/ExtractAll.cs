@@ -43,25 +43,13 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts all values when comparing the query to the choices. The method uses the weighted ratio and full process.")]
-        [Input("query", "The string to carry out the fuzzy matching on.")]
-        [Input("choices", "A list of strings to compare the query against.")]
-        [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
-        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractAll(string query, IEnumerable<string> choices, int cutOff = 0)
-        {
-            return ExtractAll(query, choices, Scorer.DefaultRatioScorer, cutOff);
-        }
-
-        /***************************************************/
-
         [Description("Extracts the top n values with the highest score when comparing the query to the choices. If the default value on n = 0 is used, all values will be returned unsorted.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
         [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractAll(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer, int cutOff = 0)
+        public static FuzzyStringResult ExtractAll(string query, IEnumerable<string> choices, int cutOff = 0, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)

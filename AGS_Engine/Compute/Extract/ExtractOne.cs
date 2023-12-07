@@ -37,17 +37,6 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts the value with the highest score when comparing the query to the choices. The method uses the weighted ratio and full process.")]
-        [Input("query", "The string to carry out the fuzzy matching on.")]
-        [Input("choices", "A list of strings to compare the query against.")]
-        [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractOne(string query, IEnumerable<string> choices)
-        {
-            return ExtractOne(query, choices, Scorer.DefaultRatioScorer);
-        }
-
-        /***************************************************/
-
         [Description("Extracts the value with the highest score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]

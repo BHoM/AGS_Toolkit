@@ -43,17 +43,6 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts all values sorted in order of score when comparing the query to the choices. The method uses the weighted ratio and full process.")]
-        [Input("query", "The string to carry out the fuzzy matching on.")]
-        [Input("choices", "A list of strings to compare the query against.")]
-        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractSorted(string query, IEnumerable<string> choices)
-        {
-            return ExtractAll(query, choices, Scorer.DefaultRatioScorer);
-        }
-
-        /***************************************************/
-
         [Description("Extracts all values sorted in order of score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]

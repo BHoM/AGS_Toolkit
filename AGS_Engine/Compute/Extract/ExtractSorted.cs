@@ -60,8 +60,7 @@ namespace BH.Engine.Adapters.AGS
             foreach (ExtractedResult<string> extractedResult in extractedResults)
             {
                 FuzzyResult<string> result = new FuzzyResult<string>(extractedResult.Value, extractedResult.Score, extractedResult.Index);
-                if (result != null)
-                    results.Add(result);
+                results.Add(result);
             }
 
             return results;
@@ -90,8 +89,7 @@ namespace BH.Engine.Adapters.AGS
             {
                 int index = extractedResult.Index;
                 FuzzyResult<BHoMObject> result = new FuzzyResult<BHoMObject>(objects[index], extractedResult.Score, index);
-                if (result != null)
-                    results.Add(result);
+                results.Add(result);
             }
 
             return results;

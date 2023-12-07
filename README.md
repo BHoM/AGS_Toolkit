@@ -1,12 +1,34 @@
-# template-repository
-This repository can be used to create brand new BHoM Toolkits :rocket:
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-- Just click on the green button above "Use this template" :point_up_2: . Call the new repo with the name of your software followed by `_Toolkit`, e.g. "MySoftware_Toolkit". If you want to develop outside of a repository, you can download the code by clicking "Code" and then saving it as zip.
-- Go in your repository or unzipped folder, double click the `RenameToolkitFiles.bat` file. When asked, insert the name of your software, e.g. "MySoftware". All the files and folder will be renamed accordingly.
-- Start developing! :rocket:
+# AGS_Toolkit
 
-## Configure development environment
-Learn how to [set up your development environment for BHoM here](https://bhom.xyz/documentation/Contributing/Getting-started-for-developers/). 
+This toolkit allows users to read objects from an Association of Geotechnical & Geoenvironmental Specialists (AGS) file using the AGS schema.
 
-## Implement the Toolkits
-See the instructions in [the documentation page on the BHoM_Toolkit](https://bhom.xyz/documentation/Basics/The-BHoM-Toolkit).
+### Known Versions of Software Supported
+AGS Version 4.1.1
+
+---
+This toolkit is part of the Buildings and Habitats object Model. Find out more on our [wiki](www.bhom.xyz/documentation/) or at [https://bhom.xyz](https://bhom.xyz/)
+
+## Quick Start 🚀 
+
+Grab the [latest installer](https://bhom.xyz/) and a selection of [sample scripts](https://github.com/BHoM/samples).
+
+
+## Getting Started for Developers 🤖 
+
+If you want to build the BHoM and the Toolkits from source, it's hopefully easy! 😄 
+Do take a look at our specific wiki pages here: [Getting Started for Developers](https://bhom.xyz/documentation/Contributing/Getting-started-for-developers/)
+
+
+## Want to Contribute? ##
+
+BHoM is an open-source project and would be nothing without its community. Take a look at our contributing guidelines and tips [here](https://github.com/BHoM/BHoM/blob/main/CONTRIBUTING.md).
+
+
+## Licence ##
+
+BHoM is free software licenced under GNU Lesser General Public Licence - [https://www.gnu.org/licenses/lgpl-3.0.html](https://www.gnu.org/licenses/lgpl-3.0.html)  
+Each contributor holds copyright over their respective contributions.
+The project versioning (Git) records all such contribution source information.
+See [LICENSE](https://github.com/BHoM/BHoM/blob/main/LICENSE) and [COPYRIGHT_HEADER](https://github.com/BHoM/BHoM/blob/main/COPYRIGHT_HEADER.txt).

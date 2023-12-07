@@ -20,30 +20,52 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Adapters.AGS;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Adapters.AGS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FuzzySharp.SimilarityRatio;
+using FuzzySharp.SimilarityRatio.Scorer;
+using FuzzySharp.SimilarityRatio.Scorer.Composite;
+using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
+
 
 namespace BH.Engine.Adapters.AGS
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("objectToModify", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(ExampleObject objectToModify)
+        [Description("Returns the scorer method to be used in FuzzyMatching methods.")]
+        [Input("scorer", "The scorer input type")]
+        [Output("o", "The scorer method.")]
+        private static IRatioScorer GetScorer(Scorer scorer)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            throw new NotImplementedException();
+            switch (scorer)
+            {
+                case Scorer.DefaultRatioScorer:
+                default:
+                    return ScorerCache.Get<DefaultRatioScorer>();
+                case Scorer.PartialRatioScorer:
+                    return ScorerCache.Get<PartialRatioScorer>();
+                case Scorer.TokenSetScorer:
+                    return ScorerCache.Get<TokenSetScorer>();
+                case Scorer.PartialTokenSetScorer:
+                    return ScorerCache.Get<PartialTokenSetScorer>();
+                case Scorer.TokenSortScorer:
+                    return ScorerCache.Get<TokenSortScorer>();
+                case Scorer.TokenAbbreviationScorer:
+                    return ScorerCache.Get<TokenSortScorer>();
+                case Scorer.PartialTokenAbbreviationScorer:
+                    return ScorerCache.Get<PartialTokenAbbreviationScorer>();
+                case Scorer.WeightedRatioScorer:
+                    return ScorerCache.Get<WeightedRatioScorer>();
+            }
         }
 
         /***************************************************/

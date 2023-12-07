@@ -20,40 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapter;
-using BH.oM.Base;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Ground;
+using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
 {
-    public partial class AGSAdapter : BHoMAdapter
+    public static partial class Convert
     {
         /***************************************************/
-        /**** Adapter overload method                   ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        private static bool GetBool(Dictionary<string, string> data, string heading)
         {
-            if (type == typeof(Borehole))
-                return ReadBoreholes();
-            if (type == typeof(Stratum))
-                return ReadStrata();
-            if (type == typeof(ContaminantSample))
-                return ReadContaminantSamples();
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return false;
+            }
 
-            return new List<IBHoMObject>();
+            string text = data[heading];
+
+            return text.ToLower() == "y" || text.ToLower() == "yes";
         }
 
         /***************************************************/
 
     }
 }
+
+
 

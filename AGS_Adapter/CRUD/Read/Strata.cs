@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Base;
 using System;
@@ -32,24 +33,29 @@ using BH.oM.Ground;
 
 namespace BH.Adapter.AGS
 {
-    public partial class AGSAdapter : BHoMAdapter
+    public partial class AGSAdapter
     {
         /***************************************************/
-        /**** Adapter overload method                   ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        private List<Stratum> ReadStrata(List<string> ids = null)
         {
-            if (type == typeof(Borehole))
-                return ReadBoreholes();
-            if (type == typeof(Stratum))
-                return ReadStrata();
-            if (type == typeof(ContaminantSample))
-                return ReadContaminantSamples();
+            string groupKey = "GEOL";
 
-            return new List<IBHoMObject>();
+            if (!m_Data.ContainsKey(groupKey))
+            {
+                Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Stratum>();
+            }
+
+            if (!m_Units.ContainsKey(groupKey))
+            {
+                Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Stratum>();
+            }
+
+            return m_Data[groupKey].Select(data => Convert.FromStratum(data, m_Units[groupKey], m_blankGeology)).Where(strata => strata != null).ToList();
         }
 
         /***************************************************/

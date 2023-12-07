@@ -20,31 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FuzzySharp;
 
 namespace BH.Engine.Adapters.AGS
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Description of the method. Will appear in the UI tooltip.")]
-        [Input("someInput1", "Description of the input. Will appear in the UI tooltip.")]
-        [Input("someInput2", "Description of the input. Will appear in the UI tooltip.")]
-        [Output("outputName", "Description of the output. Will appear in the UI tooltip.")]
-        public static ExampleObject ExampleCreateMethod(string someInput1, int someInput2)
+        [Description("Splits the strings into tokens and computes intersections and remainders between the tokens of the two strings.A comparison string is then " +
+            "built up and is compared using the simple ratio algorithm. Useful for strings where words appear redundantly. This makes use of the FuzzySharp library.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int PartialTokenSetRatio(string text, string compare)
         {
-            // This method will appear in every UI (e.g. Grasshopper) as a component.
-            // Find it using the CTRL+Shift+B search bar, or by navigating the `Create` component (Engine tab) right click menu.
-            return new ExampleObject() { SomeStringProperty = someInput1, SomeNumberProperty = someInput2 };
+            return Fuzz.PartialTokenSetRatio(text, compare);
         }
 
         /***************************************************/

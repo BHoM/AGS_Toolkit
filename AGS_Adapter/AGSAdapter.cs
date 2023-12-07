@@ -25,9 +25,11 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Adapters.AGS;
 
 namespace BH.Adapter.AGS
 {
@@ -37,32 +39,72 @@ namespace BH.Adapter.AGS
         /**** Constructors                              ****/
         /***************************************************/
 
-        [Description("Adapter for AGS.")]
+        [Description("Adapter for AGS files.")]
         [Output("The created AGS adapter.")]
-        public AGSAdapter()
+        public AGSAdapter(string filePath, AGSSettings agsSettings = null, bool active = false)
         {
-            // The Adapter constructor can be used to configure the Adapter behaviour.
-            // For example:
-            m_AdapterSettings.DefaultPushType = oM.Adapter.PushType.CreateOnly; // Adapter `Push` Action simply calls "Create" method.
-            
-            // See the wiki, the AdapterSettings object and other Adapters to see how it can be configured.
+            if (File.Exists(filePath))
+            {
+                List<string> lines = File.ReadAllLines(filePath).ToList();
 
-            // If your toolkit needs to define this.AdapterComparers and or this.DependencyTypes,
-            // this constructor has to populate those properties.
-            // See the wiki for more information.
+                // Determine where the section starts
+                string group = "";
+                List<string> headings = new List<string>();
+                foreach (string line in lines)
+                {
+                    List<string> split = line.Split(new string[] { "\",\"" }, StringSplitOptions.None).ToList();
+                    if (split.Count < 2)
+                        continue;
+
+                    switch (split[0])
+                    {
+                        case "\"GROUP":
+                            group = split[1].Replace("\"", "");
+                            m_Data[group] = new List<Dictionary<string, string>>();
+                            break;
+                        case "\"HEADING":
+                            headings = split.Skip(1).Select(x => x.Replace("\"", "")).ToList();
+                            break;
+                        case "\"UNIT":
+                            m_Units[group] = headings.Zip(split.Select(x => x.Replace("\"", "")).Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u);
+                            break;
+                        case "\"DATA":
+                            m_Data[group].Add(headings.Zip(split.Select(x => x.Replace("\"", "")).Skip(1), (h, u) => new { h, u }).ToDictionary(x => x.h, x => x.u));
+                            break;
+                        default:   // TYPE is ignored for now as it doeesn't seem to be used anywhere
+                            break;
+
+                    }
+                }
+            }
+            else
+            {
+                Engine.Base.Compute.RecordError("The file provided does not exist.");
+            }
+
+            m_Settings = agsSettings;
+            m_blankGeology = agsSettings.BlankGeology;
         }
 
-        // You can add any other constructors that take more inputs here. 
+        /***************************************************/
+        /**** Private helper methods                    ****/
+        /***************************************************/
+        private string GetDirectoryRoot(string directory)
+        {
+            List<string> directoryRoot = directory.Split('\\').ToList();
+            directoryRoot.RemoveAt(directoryRoot.Count - 1);
+
+            return String.Join("\\", directoryRoot.ToArray());
+        }
 
         /***************************************************/
         /**** Private  Fields                           ****/
         /***************************************************/
 
-        // You can add any private variable that should be in common to any other adapter methods here.
-        // If you need to add some private methods, please consider first what their nature is:
-        // if a method does not need any external call (API call, connection call, etc.)
-        // we place them in the Engine project, and then reference them from the Adapter.
-        // See the wiki for more information.
+        private Dictionary<string, List<Dictionary<string, string>>> m_Data = new Dictionary<string, List<Dictionary<string, string>>>();
+        private Dictionary<string, Dictionary<string, string>> m_Units = new Dictionary<string, Dictionary<string, string>>();
+        private AGSSettings m_Settings = null;
+        private string m_blankGeology;
 
         /***************************************************/
     }

@@ -20,31 +20,33 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FuzzySharp;
 
-namespace BH.Adapter.AGS
+namespace BH.Engine.Adapters.AGS
 {
-    public static partial class Convert
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        // Add methods for converting from BHoM to the specific software types
-        // Example:
-        public static ExampleObject ToAGS(this BHoMObject node)
+        [Description("Find all alphanumeric tokens in the string and sort those tokens and then take ratio of resulting joined strings. This makes use of the FuzzySharp library.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int TokenSortRatio(string text, string compare)
         {
-            //Insert code for convertion
-            throw new NotImplementedException();
+            return Fuzz.TokenSortRatio(text, compare);
         }
 
         /***************************************************/
+
     }
 }
 

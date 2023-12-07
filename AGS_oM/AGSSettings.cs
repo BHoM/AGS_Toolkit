@@ -20,40 +20,29 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapter;
-using BH.oM.Base;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Ground;
+using BH.oM.Adapter;
 
-namespace BH.Adapter.AGS
+namespace BH.oM.Adapters.AGS
 {
-    public partial class AGSAdapter : BHoMAdapter
+    public class AGSSettings : AdapterSettings
     {
         /***************************************************/
-        /**** Adapter overload method                   ****/
+        /****            Public Properties              ****/
         /***************************************************/
 
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
-        {
-            if (type == typeof(Borehole))
-                return ReadBoreholes();
-            if (type == typeof(Stratum))
-                return ReadStrata();
-            if (type == typeof(ContaminantSample))
-                return ReadContaminantSamples();
-
-            return new List<IBHoMObject>();
-        }
+        [Description("If blank geology occurs in the GEOL_GEOL columns, assign a geology to replace it e.g. Made ground.")]
+        public virtual string BlankGeology { get; set; }
 
         /***************************************************/
-
     }
 }
+
+
+
 

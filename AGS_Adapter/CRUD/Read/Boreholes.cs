@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Adapter;
 using BH.oM.Base;
 using System;
@@ -29,27 +30,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Ground;
+using BH.Engine.Data;
+
 
 namespace BH.Adapter.AGS
 {
-    public partial class AGSAdapter : BHoMAdapter
+    public partial class AGSAdapter
     {
         /***************************************************/
-        /**** Adapter overload method                   ****/
+        /**** Private Methods                           ****/
         /***************************************************/
-
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        private List<Borehole> ReadBoreholes(List<string> ids = null)
         {
-            if (type == typeof(Borehole))
-                return ReadBoreholes();
-            if (type == typeof(Stratum))
-                return ReadStrata();
-            if (type == typeof(ContaminantSample))
-                return ReadContaminantSamples();
+            string groupKey = "LOCA";
 
-            return new List<IBHoMObject>();
+            if (!m_Data.ContainsKey(groupKey))
+            {
+                Engine.Base.Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Borehole>();
+            }
+
+            if (!m_Units.ContainsKey(groupKey))
+            {
+                Engine.Base.Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
+                return new List<Borehole>();
+            }
+
+            List<Stratum> strata = ReadStrata();
+            List<ContaminantSample> contaminantSamples = ReadContaminantSamples();
+
+            return m_Data[groupKey].Select(data => Convert.FromBorehole(data, m_Units[groupKey], strata, contaminantSamples)).Where(borehole => borehole != null).ToList();
         }
 
         /***************************************************/

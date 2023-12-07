@@ -20,31 +20,58 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
 {
     public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Private Methods                           ****/
         /***************************************************/
 
-        // Add methods for converting to BHoM from the specific software types. 
-        // Example:
-        public static BHoMObject FromAGS(this ExampleObject node)
+        private static DateTime GetDateTime(Dictionary<string, string> data, Dictionary<string, string> units, string heading)
         {
-            //Insert code for convertion
-            throw new NotImplementedException();
+            if (!data.ContainsKey(heading))
+            {
+                Compute.RecordError($"The heading {heading} was not found within the data.");
+                return default(DateTime);
+            }
+
+            string text = data[heading];
+
+            if (!units.ContainsKey(heading))
+            {
+                Compute.RecordError($"The units for {heading} was not found within the data.");
+                return default(DateTime);
+            }
+
+            string format = units[heading];
+
+            DateTime date;
+            if (format == "")
+            {
+                DateTime.TryParse(text, out date);
+                date = default(DateTime);
+            }
+            else
+            {
+                if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    date = default(DateTime);
+            }
+
+            return date;
         }
 
         /***************************************************/
+
     }
 }
+
+
 

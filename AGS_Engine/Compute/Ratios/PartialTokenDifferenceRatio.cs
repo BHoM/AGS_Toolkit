@@ -20,36 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapter;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.oM.Ground;
+using FuzzySharp;
 
-namespace BH.Adapter.AGS
+namespace BH.Engine.Adapters.AGS
 {
-    public partial class AGSAdapter : BHoMAdapter
+    public static partial class Compute
     {
         /***************************************************/
-        /**** Adapter overload method                   ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        // This method gets called when appropriate by the Pull method contained in the base Adapter class.
-        // It gets called once per each Type.
-        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        [Description("Splits the strings into tokens and computes the ratio on those tokens (not the individual chars, but the strings themselves)." +
+            "This makes use of the FuzzySharp library.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int PartialTokenDifferenceRatio(string text, string compare)
         {
-            if (type == typeof(Borehole))
-                return ReadBoreholes();
-            if (type == typeof(Stratum))
-                return ReadStrata();
-            if (type == typeof(ContaminantSample))
-                return ReadContaminantSamples();
-
-            return new List<IBHoMObject>();
+            return Fuzz.PartialTokenDifferenceRatio(text, compare);
         }
 
         /***************************************************/

@@ -26,23 +26,29 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FuzzySharp;
+using FuzzySharp.PreProcess;
 
-namespace BH.oM.Adapters.AGS
+namespace BH.Engine.Adapters.AGS
 {
-    [Description("Object description in here. Will appear in the UI tooltip.")]
-    public class ExampleObject : BHoMObject
+    public static partial class Compute
     {
-        // // See examples in the BHoM repo and the wiki to see how we define types.
-        // // Generally, all properties should be public and have public getter and setter.
-        // // BHoM Objects should have orthogonal properties and no behaviour (no methods), as in C# Records (or Python Dataclasses).
-        // // No constructor should be specified. If a specific instantiaton method is needed, we make it as an "Engine/Create" method.
-        // // Objects created with this convention will automatically appear as UI components (e.g. Grasshopper component).
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Property description in here.")]
-        public string SomeStringProperty { get; set; }
+        [Description("Similarity ratio that attempts to determine whether one strings tokens are an abbreviation of the other strings tokens. One string must have all its " +
+            "characters in order in the other string to even be considered. This makes use of the FuzzySharp library.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int TokenAbbreviationRatio(string text, string compare)
+        {
+            return Fuzz.TokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+        }
 
-        [Description("Property description in here.")]
-        public int SomeNumberProperty { get; set; }
+        /***************************************************/
+
     }
 }
 

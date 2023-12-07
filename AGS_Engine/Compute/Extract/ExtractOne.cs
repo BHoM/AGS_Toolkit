@@ -42,16 +42,9 @@ namespace BH.Engine.Adapters.AGS
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static FuzzyResult<string> ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-           FuzzyStringResult result = ExtractTop(query, choices, scorer);
-
-            return new FuzzyStringResult
-            (
-                new List<string>() { result.Results.First()},
-                new List<int>() { result.Scores.First() },
-                new List<int>() { result.Indexes.First() }
-            );
+            return ExtractTop(query, choices, scorer).First();
         }
 
         /***************************************************/
@@ -62,16 +55,9 @@ namespace BH.Engine.Adapters.AGS
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyObjectResult containing the object, score and index resulting from the fuzzy matching algorithm.")]
-        public static FuzzyObjectResult ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static FuzzyResult<BHoMObject> ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-            FuzzyObjectResult result = ExtractTop(query, objects, propertyName, scorer);
-
-            return new FuzzyObjectResult
-            (
-                new List<BHoMObject>() { result.Results.First() },
-                new List<int>() { result.Scores.First() },
-                new List<int>() { result.Indexes.First() }
-            );
+            return ExtractTop(query, objects, propertyName, scorer).First();
         }
 
         /***************************************************/

@@ -56,7 +56,7 @@ namespace BH.Adapter.AGS
                     if (split.Count < 2)
                         continue;
 
-                    switch (split[0]) // TODO: If there are risks that the file is incorectly formated, we need to add addtional checks (e.g missing section, nb of columns not matching)
+                    switch (split[0])
                     {
                         case "\"GROUP":
                             group = split[1].Replace("\"", "");
@@ -77,6 +77,10 @@ namespace BH.Adapter.AGS
                     }
                 }
             }
+            else
+            {
+                Engine.Base.Compute.RecordError("The file provided does not exist.");
+            }
 
             m_Settings = agsSettings;
             m_blankGeology = agsSettings.BlankGeology;
@@ -92,7 +96,6 @@ namespace BH.Adapter.AGS
 
             return String.Join("\\", directoryRoot.ToArray());
         }
-
 
         /***************************************************/
         /**** Private  Fields                           ****/

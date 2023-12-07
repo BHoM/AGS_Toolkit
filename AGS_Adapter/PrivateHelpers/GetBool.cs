@@ -45,7 +45,7 @@ namespace BH.Adapter.AGS
 
             string text = data[heading];
 
-            return text.ToLower() == "y" || text.ToLower() == "yes" ? true : false;
+            return text.ToLower() == "y" || text.ToLower() == "yes";
         }
 
         /***************************************************/

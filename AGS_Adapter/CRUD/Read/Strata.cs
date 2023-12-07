@@ -55,15 +55,6 @@ namespace BH.Adapter.AGS
                 return new List<Stratum>();
             }
 
-            //List<Stratum> strata = new List<Stratum>();
-
-            //foreach(Dictionary<string,string> data in m_Data[groupKey])
-            //{
-            //    Stratum stratum = Convert.FromStratum(data, m_Units[groupKey], m_blankGeology));
-            //    if (stratum != null)
-            //        strata.Add(stratum);
-            //}
-
             return m_Data[groupKey].Select(data => Convert.FromStratum(data, m_Units[groupKey], m_blankGeology)).Where(strata => strata != null).ToList();
         }
 

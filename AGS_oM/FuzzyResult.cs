@@ -27,26 +27,65 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base;
+using BH.oM.Analytical.Results;
 
 namespace BH.oM.Adapters.AGS
 {
-    [Description("The base interface for the Fuzzy results.")]
-    public interface IFuzzyResult : IBHoMObject, IImmutable
+    [Description("A result class containing objects, scores and indexes from the fuzzy matching.")]
+    public class FuzzyResult<T> : IResult
     {
         /***************************************************/
         /****            Public Properties              ****/
         /***************************************************/
 
-        [Description("A list of scores resulting from the fuzzy matching algorithim.")]
-        List<int> Scores { get; }
+        [Description("A list of objects resulting from the fuzzy matching algorithm.")]
+        public virtual T Result { get; }
 
-        [Description("A list of indexes resulting from the fuzzy matching algorithim.")]
-        List<int> Indexes { get; }
+        [Description("A list of scores resulting from the fuzzy matching algorithm.")]
+        public virtual int Score { get; }
+
+        [Description("A list of indexes resulting from the fuzzy matching algorithm.")]
+        public virtual int Index { get; }
+
+        /***************************************************/
+        /****            Constructor                    ****/
+        /***************************************************/
+
+        public FuzzyResult(T result, int score, int index)
+        {
+            Result = result;
+            Score = score;
+            Index = index;
+        }
+
+        public int CompareTo(IResult other)
+        {
+            // TODO: Add comparison for objects at a later date
+            FuzzyResult<T> otherRes = other as FuzzyResult<T>;
+
+            if(otherRes == null)
+                return this.GetType().Name.CompareTo(other.GetType().Name);
+
+            int n = this.Score.CompareTo(otherRes.Score);
+
+            if (n == 0)
+            {
+                int l = this.Index.CompareTo(otherRes.Index);
+                if (l == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return l;
+                }
+            }
+            else
+            {
+                return n;
+            }
+        }
 
         /***************************************************/
     }
 }
-
-
-
-

@@ -48,19 +48,23 @@ namespace BH.Engine.Adapters.AGS
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static FuzzyStringResult ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static List<FuzzyResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
                 scorerMethod = GetScorer(scorer);
 
-            IEnumerable<ExtractedResult<string>> result = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
-            return new FuzzyStringResult
-            (
-                result.Select(x => x.Value).ToList(),
-                result.Select(x => x.Score).ToList(),
-                result.Select(x => x.Index).ToList()
-            );
+            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
+
+            List<FuzzyResult<string>> results = new List<FuzzyResult<string>>();
+            foreach (ExtractedResult<string> extractedResult in extractedResults)
+            {
+                FuzzyResult<string> result = new FuzzyResult<string>(extractedResult.Value, extractedResult.Score, extractedResult.Index);
+                if (result != null)
+                    results.Add(result);
+            }
+
+            return results;
         }
 
         /***************************************************/
@@ -71,7 +75,7 @@ namespace BH.Engine.Adapters.AGS
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("result", "A FuzzyObjectResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static FuzzyObjectResult ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        public static List<FuzzyResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
@@ -79,18 +83,18 @@ namespace BH.Engine.Adapters.AGS
 
             IEnumerable<string> choices = objects.Select(x => x.PropertyValue(propertyName).ToString());
 
-            IEnumerable<ExtractedResult<string>> result = Process.ExtractSorted(query, choices, s => s, scorerMethod);
+            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices, s => s, scorerMethod);
 
-            List<BHoMObject> resultObjects = new List<BHoMObject>();
-            foreach (int i in result.Select(x => x.Index))
-                resultObjects.Add(objects[i]);
+            List<FuzzyResult<BHoMObject>> results = new List<FuzzyResult<BHoMObject>>();
+            foreach (ExtractedResult<string> extractedResult in extractedResults)
+            {
+                int index = extractedResult.Index;
+                FuzzyResult<BHoMObject> result = new FuzzyResult<BHoMObject>(objects[index], extractedResult.Score, index);
+                if (result != null)
+                    results.Add(result);
+            }
 
-            return new FuzzyObjectResult
-            (
-                resultObjects,
-                result.Select(x => x.Score).ToList(),
-                result.Select(x => x.Index).ToList()
-            );
+            return results;
         }
 
         /***************************************************/

@@ -46,33 +46,33 @@ namespace BH.Engine.Search
         [Input("compare", "The string to compare against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("r", "The ratio of similarity between the two strings.")]
-        public static int FuzzyMatching(string text, string compare, Scorer scorer)
+        public static int FuzzyMatching(string text, string compare, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             switch (scorer)
             {
                 case Scorer.DefaultRatioScorer:
                 default:
-                    return SimpleRatio(text, compare);
+                    return Fuzz.Ratio(text, compare);
                 case Scorer.PartialRatioScorer:
-                    return PartialRatio(text, compare);
+                    return Fuzz.PartialRatio(text, compare);
                 case Scorer.TokenSetScorer:
-                    return TokenSetRatio(text, compare);
+                    return Fuzz.TokenSetRatio(text, compare);
                 case Scorer.PartialTokenSetScorer:
-                    return PartialTokenSetRatio(text, compare);
+                    return Fuzz.PartialTokenSetRatio(text, compare);
                 case Scorer.TokenSortScorer:
-                    return TokenSortRatio(text, compare);
+                    return Fuzz.TokenSortRatio(text, compare);
                 case Scorer.PartialTokenSortScorer:
-                    return PartialTokenSortRatio(text, compare);
+                    return Fuzz.PartialTokenSortRatio(text, compare);
                 case Scorer.TokenAbbreviationScorer:
-                    return TokenAbbreviationRatio(text, compare);
+                    return Fuzz.TokenAbbreviationRatio(text, compare);
                 case Scorer.PartialTokenAbbreviationScorer:
-                    return PartialTokenAbbreviationRatio(text, compare);
+                    return Fuzz.PartialTokenAbbreviationRatio(text, compare);
                 case Scorer.TokenInitialismScorer:
-                    return TokenInitialismRatio(text, compare);
+                    return Fuzz.TokenInitialismRatio(text, compare);
                 case Scorer.PartialTokenInitialismScorer:
-                    return PartialTokenInitialismRatio(text, compare);
+                    return Fuzz.PartialTokenInitialismRatio(text, compare);
                 case Scorer.WeightedRatioScorer:
-                    return WeightedRatio(text, compare);
+                    return Fuzz.WeightedRatio(text, compare);
 
             }
         }

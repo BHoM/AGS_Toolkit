@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {

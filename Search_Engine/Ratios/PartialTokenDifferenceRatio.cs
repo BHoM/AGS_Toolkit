@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -36,13 +36,14 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Find all alphanumeric tokens in the string and sort those tokens and then take ratio of resulting joined strings. This makes use of the FuzzySharp library.")]
+        [Description("Splits the strings into tokens and computes the ratio on those tokens (not the individual chars, but the strings themselves)." +
+            "This makes use of the FuzzySharp library.")]
         [Input("text", "The string to carry out the fuzzy matching on.")]
         [Input("compare", "The string to compare against.")]
         [Output("r", "The ratio of similarity between the two strings.")]
-        public static int PartialTokenSortRatio(string text, string compare)
+        public static int PartialTokenDifferenceRatio(string text, string compare)
         {
-            return Fuzz.PartialTokenSortRatio(text, compare);
+            return Fuzz.PartialTokenDifferenceRatio(text, compare);
         }
 
         /***************************************************/

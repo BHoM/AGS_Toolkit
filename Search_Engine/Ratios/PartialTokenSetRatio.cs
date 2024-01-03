@@ -27,9 +27,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
-using FuzzySharp.PreProcess;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -37,14 +36,14 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Similarity ratio that attempts to determine whether one strings tokens are an abbreviation of the other strings tokens. One string must have all its " +
-            "characters in order in the other string to even be considered. This makes use of the FuzzySharp library.")]
+        [Description("Splits the strings into tokens and computes intersections and remainders between the tokens of the two strings.A comparison string is then " +
+            "built up and is compared using the simple ratio algorithm. Useful for strings where words appear redundantly. This makes use of the FuzzySharp library.")]
         [Input("text", "The string to carry out the fuzzy matching on.")]
         [Input("compare", "The string to compare against.")]
         [Output("r", "The ratio of similarity between the two strings.")]
-        public static int TokenAbbreviationRatio(string text, string compare)
+        public static int PartialTokenSetRatio(string text, string compare)
         {
-            return Fuzz.TokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+            return Fuzz.PartialTokenSetRatio(text, compare);
         }
 
         /***************************************************/

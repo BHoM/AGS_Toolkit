@@ -20,20 +20,20 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Adapters.AGS;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Search;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using FuzzySharp;
+using FuzzySharp.Extractor;
 using FuzzySharp.SimilarityRatio;
 using FuzzySharp.SimilarityRatio.Scorer;
-using FuzzySharp.SimilarityRatio.Scorer.Composite;
 using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 
-
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -41,30 +41,39 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the scorer method to be used in FuzzyMatching methods.")]
-        [Input("scorer", "The scorer input type")]
-        [Output("o", "The scorer method.")]
-        private static IRatioScorer GetScorer(Scorer scorer)
+        [Description("Carries out a fuzzy match of the two strings provided using the scorer specified.")]
+        [Input("text", "The string to carry out the fuzzy matching on.")]
+        [Input("compare", "The string to compare against.")]
+        [Input("scorer", "The method to use to score the strings when compared.")]
+        [Output("r", "The ratio of similarity between the two strings.")]
+        public static int FuzzyMatching(string text, string compare, Scorer scorer)
         {
             switch (scorer)
             {
                 case Scorer.DefaultRatioScorer:
                 default:
-                    return ScorerCache.Get<DefaultRatioScorer>();
+                    return SimpleRatio(text, compare);
                 case Scorer.PartialRatioScorer:
-                    return ScorerCache.Get<PartialRatioScorer>();
+                    return PartialRatio(text, compare);
                 case Scorer.TokenSetScorer:
-                    return ScorerCache.Get<TokenSetScorer>();
+                    return TokenSetRatio(text, compare);
                 case Scorer.PartialTokenSetScorer:
-                    return ScorerCache.Get<PartialTokenSetScorer>();
+                    return PartialTokenSetRatio(text, compare);
                 case Scorer.TokenSortScorer:
-                    return ScorerCache.Get<TokenSortScorer>();
+                    return TokenSortRatio(text, compare);
+                case Scorer.PartialTokenSortScorer:
+                    return PartialTokenSortRatio(text, compare);
                 case Scorer.TokenAbbreviationScorer:
-                    return ScorerCache.Get<TokenSortScorer>();
+                    return TokenAbbreviationRatio(text, compare);
                 case Scorer.PartialTokenAbbreviationScorer:
-                    return ScorerCache.Get<PartialTokenAbbreviationScorer>();
+                    return PartialTokenAbbreviationRatio(text, compare);
+                case Scorer.TokenInitialismScorer:
+                    return TokenInitialismRatio(text, compare);
+                case Scorer.PartialTokenInitialismScorer:
+                    return PartialTokenInitialismRatio(text, compare);
                 case Scorer.WeightedRatioScorer:
-                    return ScorerCache.Get<WeightedRatioScorer>();
+                    return WeightedRatio(text, compare);
+
             }
         }
 

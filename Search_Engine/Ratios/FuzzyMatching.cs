@@ -28,10 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
-using FuzzySharp.Extractor;
-using FuzzySharp.SimilarityRatio;
-using FuzzySharp.SimilarityRatio.Scorer;
-using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
+using FuzzySharp.PreProcess;
 
 namespace BH.Engine.Search
 {
@@ -64,9 +61,9 @@ namespace BH.Engine.Search
                 case Scorer.PartialTokenSortScorer:
                     return Fuzz.PartialTokenSortRatio(text, compare);
                 case Scorer.TokenAbbreviationScorer:
-                    return Fuzz.TokenAbbreviationRatio(text, compare);
+                    return Fuzz.TokenAbbreviationRatio(text, compare, PreprocessMode.Full);
                 case Scorer.PartialTokenAbbreviationScorer:
-                    return Fuzz.PartialTokenAbbreviationRatio(text, compare);
+                    return Fuzz.PartialTokenAbbreviationRatio(text, compare, PreprocessMode.Full);
                 case Scorer.TokenInitialismScorer:
                     return Fuzz.TokenInitialismRatio(text, compare);
                 case Scorer.PartialTokenInitialismScorer:

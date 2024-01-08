@@ -23,7 +23,7 @@
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 
-namespace BH.oM.Adapters.AGS
+namespace BH.oM.Search
 {
     /***************************************************/
 

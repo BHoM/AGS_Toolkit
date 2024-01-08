@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Analytical.Results;
 
-namespace BH.oM.Adapters.AGS
+namespace BH.oM.Search
 {
     [Description("A result class containing objects, scores and indexes from the fuzzy matching.")]
     public class FuzzyResult<T> : IResult, IImmutable

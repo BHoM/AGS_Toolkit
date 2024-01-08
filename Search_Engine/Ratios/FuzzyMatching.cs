@@ -22,13 +22,15 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Search;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using FuzzySharp;
+using FuzzySharp.PreProcess;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -36,14 +38,40 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Splits the strings into tokens and computes intersections and remainders between the tokens of the two strings.A comparison string is then " +
-            "built up and is compared using the simple ratio algorithm. Useful for strings where words appear redundantly. This makes use of the FuzzySharp library.")]
+        [Description("Carries out a fuzzy match of the two strings provided using the scorer specified.")]
         [Input("text", "The string to carry out the fuzzy matching on.")]
         [Input("compare", "The string to compare against.")]
+        [Input("scorer", "The method to use to score the strings when compared.")]
         [Output("r", "The ratio of similarity between the two strings.")]
-        public static int PartialTokenSetRatio(string text, string compare)
+        public static int FuzzyMatching(string text, string compare, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-            return Fuzz.PartialTokenSetRatio(text, compare);
+            switch (scorer)
+            {
+                case Scorer.DefaultRatioScorer:
+                default:
+                    return Fuzz.Ratio(text, compare);
+                case Scorer.PartialRatioScorer:
+                    return Fuzz.PartialRatio(text, compare);
+                case Scorer.TokenSetScorer:
+                    return Fuzz.TokenSetRatio(text, compare);
+                case Scorer.PartialTokenSetScorer:
+                    return Fuzz.PartialTokenSetRatio(text, compare);
+                case Scorer.TokenSortScorer:
+                    return Fuzz.TokenSortRatio(text, compare);
+                case Scorer.PartialTokenSortScorer:
+                    return Fuzz.PartialTokenSortRatio(text, compare);
+                case Scorer.TokenAbbreviationScorer:
+                    return Fuzz.TokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+                case Scorer.PartialTokenAbbreviationScorer:
+                    return Fuzz.PartialTokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+                case Scorer.TokenInitialismScorer:
+                    return Fuzz.TokenInitialismRatio(text, compare);
+                case Scorer.PartialTokenInitialismScorer:
+                    return Fuzz.PartialTokenInitialismRatio(text, compare);
+                case Scorer.WeightedRatioScorer:
+                    return Fuzz.WeightedRatio(text, compare);
+
+            }
         }
 
         /***************************************************/

@@ -22,8 +22,8 @@
 
 using BH.Engine.Base;
 using BH.oM.Base;
-using BH.oM.Adapters.AGS;
 using BH.oM.Base.Attributes;
+using BH.oM.Search;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ using FuzzySharp.SimilarityRatio;
 using FuzzySharp.SimilarityRatio.Scorer;
 using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -43,19 +43,18 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extracts all values unsorted with a score greater than the cutoff when comparing the query to the choices.")]
+        [Description("Extracts all values sorted in order of score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("choices", "A list of strings to compare the query against.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
-        [Output("result", "A FuzzyResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<FuzzyResult<string>> ExtractAll(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer, int cutOff = 0)
+        [Output("result", "A FuzzyStringResult containing the strings, scores and indexes resulting from the fuzzy matching algorithm.")]
+        public static List<FuzzyResult<string>> ExtractSorted(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
                 scorerMethod = GetScorer(scorer);
 
-            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractAll(query, choices.ToArray(), s => s, scorerMethod, cutOff);
+            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices.ToArray(), s => s, scorerMethod);
 
             List<FuzzyResult<string>> results = new List<FuzzyResult<string>>();
             foreach (ExtractedResult<string> extractedResult in extractedResults)
@@ -69,14 +68,13 @@ namespace BH.Engine.Adapters.AGS
 
         /***************************************************/
 
-        [Description("Extracts all BHoMObjects unsorted with a score greater than the cutoff when comparing the query to the choices.")]
+        [Description("Extracts all values sorted in order of score when comparing the query to the choices.")]
         [Input("query", "The string to carry out the fuzzy matching on.")]
         [Input("objects", "A list of BHoMObjects to compare the query against.")]
         [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
         [Input("scorer", "The method to use to score the strings when compared.")]
-        [Input("cutOff", "The cuttoff score (i.e. lower bound) for results to be returned.")]
-        [Output("result", "A FuzzyResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
-        public static List<FuzzyResult<BHoMObject>> ExtractAll(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer, int cutOff = 0)
+        [Output("result", "A FuzzyObjectResult containing the objects, scores and indexes resulting from the fuzzy matching algorithm.")]
+        public static List<FuzzyResult<BHoMObject>> ExtractSorted(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
         {
             IRatioScorer scorerMethod = ScorerCache.Get<DefaultRatioScorer>();
             if (scorer != Scorer.DefaultRatioScorer)
@@ -84,7 +82,7 @@ namespace BH.Engine.Adapters.AGS
 
             IEnumerable<string> choices = objects.Select(x => x.PropertyValue(propertyName).ToString());
 
-            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractAll(query, choices, s => s, scorerMethod, cutOff);
+            IEnumerable<ExtractedResult<string>> extractedResults = Process.ExtractSorted(query, choices, s => s, scorerMethod);
 
             List<FuzzyResult<BHoMObject>> results = new List<FuzzyResult<BHoMObject>>();
             foreach (ExtractedResult<string> extractedResult in extractedResults)
@@ -101,3 +99,5 @@ namespace BH.Engine.Adapters.AGS
 
     }
 }
+
+

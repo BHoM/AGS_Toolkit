@@ -22,15 +22,14 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Search;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using FuzzySharp;
-using FuzzySharp.PreProcess;
 
-
-namespace BH.Engine.Adapters.AGS
+namespace BH.Engine.Search
 {
     public static partial class Compute
     {
@@ -38,14 +37,27 @@ namespace BH.Engine.Adapters.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Similarity ratio that attempts to determine whether one strings tokens are an abbreviation of the other strings tokens. One string must have all its " +
-            "characters in order in the other string to even be considered. This makes use of the FuzzySharp library.")]
-        [Input("text", "The string to carry out the fuzzy matching on.")]
-        [Input("compare", "The string to compare against.")]
-        [Output("r", "The ratio of similarity between the two strings.")]
-        public static int PartialTokenAbbreviationRatio(string text, string compare)
+        [Description("Extracts the value with the highest score when comparing the query to the choices.")]
+        [Input("query", "The string to carry out the fuzzy matching on.")]
+        [Input("choices", "A list of strings to compare the query against.")]
+        [Input("scorer", "The method to use to score the strings when compared.")]
+        [Output("result", "A FuzzyStringResult containing the string, score and index resulting from the fuzzy matching algorithm.")]
+        public static FuzzyResult<string> ExtractOne(string query, IEnumerable<string> choices, Scorer scorer = Scorer.DefaultRatioScorer)
         {
-            return Fuzz.PartialTokenAbbreviationRatio(text, compare, PreprocessMode.Full);
+            return ExtractTop(query, choices, scorer).First();
+        }
+
+        /***************************************************/
+
+        [Description("Extracts the BHoMObject with the highest score when comparing the query to the choices.")]
+        [Input("query", "The string to carry out the fuzzy matching on.")]
+        [Input("objects", "A list of BHoMObjects to compare the query against.")]
+        [Input("propertyName", "The propertyName to compare the query against - the property must be a string.")]
+        [Input("scorer", "The method to use to score the strings when compared.")]
+        [Output("result", "A FuzzyObjectResult containing the object, score and index resulting from the fuzzy matching algorithm.")]
+        public static FuzzyResult<BHoMObject> ExtractOne(string query, List<BHoMObject> objects, string propertyName, Scorer scorer = Scorer.DefaultRatioScorer)
+        {
+            return ExtractTop(query, objects, propertyName, scorer).First();
         }
 
         /***************************************************/

@@ -70,6 +70,13 @@ namespace BH.Adapter.AGS
                     return value.FromGramPerKilogram();
                 case "kg/kg":
                     return value;
+                // Molality
+                case "mole/g":
+                case "mol/g":
+                    return value.FromMolePerGram();
+                case "mole/kg":
+                case "mol/kg":
+                    return value;
                 //Volume
                 case "l":
                     return value.FromLitre();

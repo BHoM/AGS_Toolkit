@@ -26,6 +26,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Ground;
+using BH.oM.Adapters.AGS;
+using System.Runtime.CompilerServices;
 
 namespace BH.Adapter.AGS
 {
@@ -34,7 +36,7 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        public static Stratum FromStratum(Dictionary<string, string> data, Dictionary<string, string> units, string blankGeology)
+        public static Stratum FromStratum(Dictionary<string, string> data, Dictionary<string, string> units, string blankGeology, BlankGeologyStrategy blankGeologyStrategy)
         {
             string id = GetString(data, "LOCA_ID");
 
@@ -50,10 +52,6 @@ namespace BH.Adapter.AGS
                 return null;
             }
 
-            string observedGeology = GetString(data, "GEOL_GEOL");
-            if (observedGeology == "")
-                observedGeology = blankGeology;
-
             string interpretedGeology = GetString(data, "GEOL_GEO2");
             string legend = GetString(data, "GEOL_LEG");
             if (legend == "")
@@ -67,9 +65,49 @@ namespace BH.Adapter.AGS
             string references = GetString(data, "FILE_FSET");
             string remarks = GetString(data, "GEOL_REM");
 
+
             StratumReference reference = new StratumReference() { Remarks = remarks, LexiconCode = lexiconCode, Name = strataRef, Files = references };
             if (reference != null)
                 stratumProperties.Add(reference);
+
+            string observedGeology = GetString(data, "GEOL_GEOL");
+            if (observedGeology == "")
+            {
+                switch (blankGeologyStrategy)
+                {
+                    case BlankGeologyStrategy.Replace:
+                        {
+                            observedGeology = blankGeology;
+                            break;
+                        }
+                    case BlankGeologyStrategy.Legend:
+                        {
+                            if(legend != "")
+                                blankGeology = legend;
+                            break;
+                        }
+                    case BlankGeologyStrategy.Lexicon:
+                        {
+                            if (lexiconCode != "")
+                                blankGeology = lexiconCode;
+                            else
+                                Engine.Base.Compute.RecordWarning($"No Lexicon Code provided for {id}. Therefore, the blank geology cannot be set.");
+                            break;
+                        }
+                    case BlankGeologyStrategy.Description:
+                        {
+                            if (description != "")
+                            {
+                                string upperWords = String.Join(" ",description.Split(' ').Where(x => string.Equals(x, x.ToUpper(),StringComparison.Ordinal)));
+                                blankGeology = upperWords;
+                            }
+                            else
+                                Engine.Base.Compute.RecordWarning($"No description provided for {id}. Therefore, the blank geology cannot be set.");
+                            break;
+                        }
+
+                }
+            }
 
             Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "", blankGeology, stratumProperties);
 

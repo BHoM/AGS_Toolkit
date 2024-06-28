@@ -27,7 +27,6 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Ground;
 using BH.oM.Adapters.AGS;
-using System.Runtime.CompilerServices;
 
 namespace BH.Adapter.AGS
 {
@@ -83,13 +82,13 @@ namespace BH.Adapter.AGS
                     case BlankGeologyStrategy.Legend:
                         {
                             if(legend != "")
-                                blankGeology = legend;
+                                observedGeology = legend;
                             break;
                         }
                     case BlankGeologyStrategy.Lexicon:
                         {
                             if (lexiconCode != "")
-                                blankGeology = lexiconCode;
+                                observedGeology = lexiconCode;
                             else
                                 Engine.Base.Compute.RecordWarning($"No Lexicon Code provided for {id}. Therefore, the blank geology cannot be set.");
                             break;
@@ -98,8 +97,11 @@ namespace BH.Adapter.AGS
                         {
                             if (description != "")
                             {
-                                string upperWords = String.Join(" ",description.Split(' ').Where(x => string.Equals(x, x.ToUpper(),StringComparison.Ordinal)));
-                                blankGeology = upperWords;
+                                // keep only letters
+                                //Remove punctuation and numbers
+                                string upperWords = String.Join(" ", description.Split(' ').Where(x => string.Equals(x, x.ToUpper(), StringComparison.Ordinal)));
+                                upperWords = string.Concat(upperWords.Where(char.IsLetter));
+                                blankGeology = upperWords.Trim();
                             }
                             else
                                 Engine.Base.Compute.RecordWarning($"No description provided for {id}. Therefore, the blank geology cannot be set.");

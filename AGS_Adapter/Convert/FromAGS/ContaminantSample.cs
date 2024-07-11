@@ -135,11 +135,20 @@ namespace BH.Adapter.AGS
 
             // Result Properties
             string resultType = GetString(data, "ERES_RTCD");
+            string interpretedQualifier = GetString(data, "ERES_IQLF");
             bool reportable = GetBool(data, "ERES_RRES");
             bool detectFlag = GetBool(data, "ERES_DETF");
             bool organic = GetBool(data, "ERES_ORG");
 
-            ResultProperties resultProperties = new ResultProperties() { Organic = organic, Reportable = reportable, DetectFlag = detectFlag, Type = resultType };
+            ResultProperties resultProperties = new ResultProperties() 
+            { 
+                Organic = organic, 
+                Reportable = reportable, 
+                DetectFlag = detectFlag, 
+                Type = resultType, 
+                Qualifier = interpretedQualifier 
+            };
+
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 

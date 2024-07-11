@@ -59,7 +59,7 @@ namespace BH.Adapter.AGS
 
             //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
             units["ERES_RVAL"] = rvalUnit;
-            double result = GetDouble(data, units, "ERES_RVAL");
+            double result = GetDouble(data, units, "ERES_RTXT");
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 

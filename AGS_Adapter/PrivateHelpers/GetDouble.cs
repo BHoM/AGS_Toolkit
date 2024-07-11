@@ -47,6 +47,9 @@ namespace BH.Adapter.AGS
             string text = data[heading];
 
             double number;
+            if(text.Contains("<"))
+                text = text.Replace("<", "").Trim();
+
             if (!double.TryParse(text, out number))
                 number = double.NaN;
 

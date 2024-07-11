@@ -59,6 +59,7 @@ namespace BH.Adapter.AGS
 
             //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
             units["ERES_RVAL"] = rvalUnit;
+            Type quantity = Convert.Quantity(rvalUnit);
             double result = GetDouble(data, units, "ERES_RTXT");
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
@@ -167,10 +168,21 @@ namespace BH.Adapter.AGS
                 TICProbability = ticProbability,
                 TICRetention = ticRetention
             };
+
             if (detectionProperties != null)
                 contaminantProperties.Add(detectionProperties);
 
-            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, top, chemical, name, result, type, contaminantProperties);
+            ContaminantSample contaminantSample = new ContaminantSample
+            {
+                Id = id,
+                Top = top,
+                Chemical = chemical,
+                Name = name,
+                Result = result,
+                ResultQuantity = quantity,
+                Type = type,
+                ContaminantProperties = contaminantProperties
+            };
 
             return contaminantSample;
 

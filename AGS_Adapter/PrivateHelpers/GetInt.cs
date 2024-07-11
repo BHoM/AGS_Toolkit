@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
         {
             if (!data.ContainsKey(heading))
             {
-                Compute.RecordError($"The heading {heading} was not found within the data.");
+                Compute.RecordWarning($"The heading {heading} was not found within the data.");
                 return 0;
             }
 

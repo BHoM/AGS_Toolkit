@@ -60,7 +60,7 @@ namespace BH.Adapter.AGS
             List<IStratumProperty> stratumProperties = new List<IStratumProperty>();
 
             string strataRef = GetString(data, "GEOL_STAT");
-            string lexiconCode = GetString(data, "GEOL_STAT");
+            string lexiconCode = GetString(data, "GEOL_BGS");
             string references = GetString(data, "FILE_FSET");
             string remarks = GetString(data, "GEOL_REM");
 
@@ -111,7 +111,7 @@ namespace BH.Adapter.AGS
                 }
             }
 
-            Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "", blankGeology, stratumProperties);
+            Stratum strata = Engine.Ground.Create.Stratum(id, top, bottom, description, legend, observedGeology, interpretedGeology, "", stratumProperties);
 
             strata.Name = strataRef;
 

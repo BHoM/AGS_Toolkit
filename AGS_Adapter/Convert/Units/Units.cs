@@ -86,8 +86,13 @@ namespace BH.Adapter.AGS
                 // Time
                 case "s":
                     return value;
+                // Temperature
+                case "degC":
+                    return value.FromDegreeCelsius();
                 // Dimensionless
                 case "%":
+                case "%w/w":
+                case "% w/w":
                 case "":
                 case "-":
                 case "--":

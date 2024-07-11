@@ -76,8 +76,13 @@ namespace BH.Adapter.AGS
                 // Time
                 case "s":
                     return typeof(Time);
+                // Temperature
+                case "degC":
+                    return typeof(Temperature);
                 // Dimensionless
                 case "%":
+                case "%w/w":
+                case "% w/w":
                 case "":
                 case "-":
                 case "--":

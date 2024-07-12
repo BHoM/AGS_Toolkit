@@ -20,50 +20,32 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.oM.Adapter;
-using BH.oM.Base;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Ground;
-using BH.oM.Adapters.AGS;
+using BH.oM.Adapter;
+using BH.oM.Base.Attributes;
 
-namespace BH.Adapter.AGS
+namespace BH.oM.Adapters.AGS
 {
-    public partial class AGSAdapter
+    [Description("Different approaches for the AGS_Toolkit to handle blank geology.")]
+    public enum BlankGeologyStrategy
     {
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private List<Stratum> ReadStrata(List<string> ids = null)
-        {
-            string groupKey = "GEOL";
-
-            if (!m_Data.ContainsKey(groupKey))
-            {
-                Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
-                return new List<Stratum>();
-            }
-
-            if (!m_Units.ContainsKey(groupKey))
-            {
-                Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
-                return new List<Stratum>();
-            }
-
-            BlankGeologyStrategy blankGeologyStrategy = m_Settings.BlankGeologyStraegy;
-            
-            return m_Data[groupKey].Select(data => Convert.FromStratum(data, m_Units[groupKey], m_blankGeology, blankGeologyStrategy)).Where(strata => strata != null).ToList();
-        }
-
-        /***************************************************/
-
+        [Description("Replace any entries of blank geology with a specificed string.")]
+        Replace = 0,
+        [Description("Replace any entries of blank geology using the description attribute (GEOL_DESC) with words in CAPS.")]
+        Description = 1,
+        [Description("Replace any entries of blank geology using the legend (GEOL_LEG).")]
+        Legend = 2,
+        [Description("Replace any entries of blank geology using the lexicon code (GEOL_BGS).")]
+        Lexicon = 3,
     }
 }
+
+
+
 
 

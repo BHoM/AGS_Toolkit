@@ -36,11 +36,15 @@ namespace BH.oM.Adapters.AGS
         /****            Public Properties              ****/
         /***************************************************/
 
-        [Description("If blank geology occurs in the GEOL_GEOL columns, assign a geology to replace it e.g. Made ground.")]
+        [Description("Only implemented when the BlankGeologyStrategy is set to replacement. \n" +
+            "If blank geology occurs in the GEOL_GEOL columns, assign a geology to replace it e.g. Made ground.")]
         public virtual string BlankGeology { get; set; }
 
-        /***************************************************/
-    }
+        [Description("The strategy used to handle blank geology entries.")]
+        public virtual BlankGeologyStrategy BlankGeologyStraegy { get; set; }
+
+    /***************************************************/
+}
 }
 
 

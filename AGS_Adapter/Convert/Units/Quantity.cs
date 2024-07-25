@@ -25,6 +25,8 @@ using BH.Engine.Base;
 using BH.Engine.Units;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Adapter.AGS
 {
@@ -34,61 +36,49 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static double Units(double value, string unit, string key = "")
+        public static Type Quantity(string unit, string key = "")
         {
-            if (double.IsNaN(value))
-                return value;
 
             switch (unit.Trim().ToLower())
             {
                 // Length
                 case "m":
-                    return value;
                 case "cm":
-                    return value.FromCentimetre();
                 case "mm":
-                    return value.FromMillimetre();
                 case "ft":
-                    return value.FromFoot();
                 case "in":
-                    return value.FromInch();
+                    return typeof(Length);
                 // Density
                 case "ug/l":
                 case "μg/l":
-                    return value.FromMicrogramPerLitre();
                 case "mg/l":
-                    return value.FromMilligramPerLitre();
                 case "g/l":
-                    return value.FromGramPerLitre();
+                    return typeof(Density);
                 //MassFraction
                 case "mg/kg":
-                    return value.FromMilligramPerKilogram();
                 case "ug/kg":
                 case "μg/kg":
-                    return value.FromMicrogramPerKilogram();
                 case "g/kg":
-                    return value.FromGramPerKilogram();
                 case "kg/kg":
-                    return value;
+                    return typeof(MassFraction);
                 // Molality
                 case "mole/g":
                 case "mol/g":
-                    return value.FromMolePerGram();
                 case "mole/kg":
                 case "mol/kg":
-                    return value;
+                    return typeof(Molality);
                 //Volume
                 case "l":
-                    return value.FromLitre();
+                    return typeof(Volume);
                 //Mass 
                 case "kg":
-                    return value;
+                    return typeof(Mass);
                 // Time
                 case "s":
-                    return value;
+                    return typeof(Time);
                 // Temperature
                 case "degC":
-                    return value.FromDegreeCelsius();
+                    return typeof(Temperature);
                 // Dimensionless
                 case "%":
                 case "%w/w":
@@ -98,10 +88,10 @@ namespace BH.Adapter.AGS
                 case "--":
                 case "---":
                 case "pH":
-                    return value;
+                    return null;
                 default:
                     Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {key}.");
-                    return value;
+                    return null;
 
             }
         }

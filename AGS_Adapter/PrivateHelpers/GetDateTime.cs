@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
         {
             if (!data.ContainsKey(heading))
             {
-                Compute.RecordError($"The heading {heading} was not found within the data.");
+                Compute.RecordWarning($"The heading {heading} was not found within the data.");
                 return default(DateTime);
             }
 
@@ -47,7 +47,7 @@ namespace BH.Adapter.AGS
 
             if (!units.ContainsKey(heading))
             {
-                Compute.RecordError($"The units for {heading} was not found within the data.");
+                Compute.RecordWarning($"The units for {heading} was not found within the data.");
                 return default(DateTime);
             }
 

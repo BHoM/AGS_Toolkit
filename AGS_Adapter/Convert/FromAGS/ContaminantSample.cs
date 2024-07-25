@@ -59,7 +59,8 @@ namespace BH.Adapter.AGS
 
             //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
             units["ERES_RVAL"] = rvalUnit;
-            double result = GetDouble(data, units, "ERES_RVAL");
+            Type quantity = Convert.Quantity(rvalUnit);
+            double result = GetDouble(data, units, "ERES_RTXT");
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
@@ -135,11 +136,20 @@ namespace BH.Adapter.AGS
 
             // Result Properties
             string resultType = GetString(data, "ERES_RTCD");
+            string interpretedQualifier = GetString(data, "ERES_IQLF");
             bool reportable = GetBool(data, "ERES_RRES");
             bool detectFlag = GetBool(data, "ERES_DETF");
             bool organic = GetBool(data, "ERES_ORG");
 
-            ResultProperties resultProperties = new ResultProperties() { Organic = organic, Reportable = reportable, DetectFlag = detectFlag, Type = resultType };
+            ResultProperties resultProperties = new ResultProperties() 
+            { 
+                Organic = organic, 
+                Reportable = reportable, 
+                DetectFlag = detectFlag, 
+                Type = resultType, 
+                Qualifier = interpretedQualifier 
+            };
+
             if (resultProperties != null)
                 contaminantProperties.Add(resultProperties);
 
@@ -158,10 +168,21 @@ namespace BH.Adapter.AGS
                 TICProbability = ticProbability,
                 TICRetention = ticRetention
             };
+
             if (detectionProperties != null)
                 contaminantProperties.Add(detectionProperties);
 
-            ContaminantSample contaminantSample = Engine.Ground.Create.ContaminantSample(id, top, chemical, name, result, type, contaminantProperties);
+            ContaminantSample contaminantSample = new ContaminantSample
+            {
+                Id = id,
+                Top = top,
+                Chemical = chemical,
+                Name = name,
+                Result = result,
+                ResultQuantity = quantity,
+                Type = type,
+                ContaminantProperties = contaminantProperties
+            };
 
             return contaminantSample;
 

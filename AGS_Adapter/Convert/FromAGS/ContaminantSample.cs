@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Base;
 using BH.oM.Ground;
 
 namespace BH.Adapter.AGS
@@ -61,6 +62,11 @@ namespace BH.Adapter.AGS
             units["ERES_RVAL"] = rvalUnit;
             Type quantity = Convert.Quantity(rvalUnit);
             double result = GetDouble(data, units, "ERES_RTXT");
+
+            string rTxt = "";
+            // Essentially if there was text in the ERES_RTXT that is not < or >, then add it to the qualifier
+            if (double.IsNaN(result))
+                rTxt = GetString(data, "ERES_RTXT");
 
             List<IContaminantProperty> contaminantProperties = new List<IContaminantProperty>();
 
@@ -136,7 +142,14 @@ namespace BH.Adapter.AGS
 
             // Result Properties
             string resultType = GetString(data, "ERES_RTCD");
+
             string interpretedQualifier = GetString(data, "ERES_IQLF");
+
+            if (rTxt != "" && interpretedQualifier != "")
+                Compute.RecordWarning("The qualifier contains data and cannot be overwritten.");
+            else if (rTxt != "" && interpretedQualifier == "")
+                interpretedQualifier = rTxt;
+
             bool reportable = GetBool(data, "ERES_RRES");
             bool detectFlag = GetBool(data, "ERES_DETF");
             bool organic = GetBool(data, "ERES_ORG");

@@ -58,8 +58,8 @@ namespace BH.Adapter.AGS
             string type = GetString(data, "SAMP_TYPE");
             string rvalUnit = GetString(data, "ERES_RUNI");
 
-            //Replace the ERES_RVAL unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
-            units["ERES_RVAL"] = rvalUnit;
+            //Replace the ERES_RTXT unit value, as this is provided in the ERES_RUNI column (not the UNITS heading)
+            units["ERES_RTXT"] = rvalUnit;
             Type quantity = Convert.Quantity(rvalUnit);
             double result = GetDouble(data, units, "ERES_RTXT");
 

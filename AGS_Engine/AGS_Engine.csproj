@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)FuzzySharp.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
 
 </Project>

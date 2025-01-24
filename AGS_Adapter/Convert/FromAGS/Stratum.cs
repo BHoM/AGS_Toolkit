@@ -101,7 +101,7 @@ namespace BH.Adapter.AGS
                                 //Remove punctuation and numbers
                                 string upperWords = String.Join(" ", description.Split(' ').Where(x => string.Equals(x, x.ToUpper(), StringComparison.Ordinal)));
                                 upperWords = string.Concat(upperWords.Where(char.IsLetter));
-                                blankGeology = upperWords.Trim();
+                                observedGeology = upperWords.Trim();
                             }
                             else
                                 Engine.Base.Compute.RecordWarning($"No description provided for {id}. Therefore, the blank geology cannot be set.");

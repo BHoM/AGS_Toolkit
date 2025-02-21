@@ -25,6 +25,7 @@ using BH.Engine.Base;
 using BH.Engine.Units;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace BH.Adapter.AGS
 {
@@ -57,6 +58,7 @@ namespace BH.Adapter.AGS
                 case "μg/l":
                     return value.FromMicrogramPerLitre();
                 case "mg/l":
+                case "mgcao3/l":
                     return value.FromMilligramPerLitre();
                 case "g/l":
                     return value.FromGramPerLitre();
@@ -75,8 +77,11 @@ namespace BH.Adapter.AGS
                 case "mol/g":
                     return value.FromMolePerGram();
                 case "mole/kg":
+                case "moles/kg":
                 case "mol/kg":
                     return value;
+                case "mmol/kg":
+                    return value.FromMillimolePerKilogram();
                 //Volume
                 case "l":
                     return value.FromLitre();
@@ -89,6 +94,15 @@ namespace BH.Adapter.AGS
                 // Temperature
                 case "degC":
                     return value.FromDegreeCelsius();
+                // Electric Conductivity
+                case "s/m":
+                    return value;
+                case "s/cm":
+                    return value.FromSiemensPerCentimetre();
+                case "us/cm":
+                    return value.FromSiemensPerCentimetre()*Math.Pow(10,-6);
+                case "ms/cm":
+                    return value.FromSiemensPerCentimetre() * Math.Pow(10, -3); ;
                 // Dimensionless
                 case "%":
                 case "%w/w":

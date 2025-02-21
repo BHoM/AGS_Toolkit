@@ -26,6 +26,7 @@ using BH.Engine.Units;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Text.RegularExpressions;
 
 namespace BH.Adapter.AGS
 {
@@ -40,7 +41,7 @@ namespace BH.Adapter.AGS
             if (double.IsNaN(value))
                 return value;
 
-            switch (unit.Trim().ToLower())
+            switch (Regex.Replace(unit, @"\s+", "").ToLower())
             {
                 // Length
                 case "m":
@@ -71,9 +72,11 @@ namespace BH.Adapter.AGS
                 case "g/kg":
                     return value.FromGramPerKilogram();
                 case "kg/kg":
+                case "mass%":
                     return value;
                 // Molality
                 case "mole/g":
+                case "moles/g":
                 case "mol/g":
                     return value.FromMolePerGram();
                 case "mole/kg":
@@ -92,7 +95,7 @@ namespace BH.Adapter.AGS
                 case "s":
                     return value;
                 // Temperature
-                case "degC":
+                case "degc":
                     return value.FromDegreeCelsius();
                 // Electric Conductivity
                 case "s/m":
@@ -111,7 +114,12 @@ namespace BH.Adapter.AGS
                 case "-":
                 case "--":
                 case "---":
-                case "pH":
+                case "ph":
+                case "phunit":
+                case "phunits":
+                case "no":
+                case "no units":
+                case "none":
                     return value;
                 default:
                     Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {key}.");

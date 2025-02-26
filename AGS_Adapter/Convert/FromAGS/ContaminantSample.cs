@@ -38,6 +38,7 @@ namespace BH.Adapter.AGS
         public static ContaminantSample FromContaminantSample(Dictionary<string, string> data, Dictionary<string, string> units)
         {
             string id = GetString(data, "LOCA_ID");
+
             double top = GetDouble(data, units, "SAMP_TOP");
 
             if (double.IsNaN(top))
@@ -46,10 +47,9 @@ namespace BH.Adapter.AGS
             if (double.IsNaN(top))
             {
                 if (id == "")
-                    Engine.Base.Compute.RecordWarning($"The top (SAMP_TOP/SPEC_DPTH) value for the contaminant sample is not valid as well as the id (LOCA_ID) and has been skipped.");
+                    Compute.RecordWarning($"The top (SAMP_TOP/SPEC_DPTH) value for the contaminant sample is not valid as well as the id (LOCA_ID) and has been skipped.");
                 else
-                    Engine.Base.Compute.RecordWarning($"The top (SAMP_TOP/SPEC_DPTH) value for {id} is invalid and has been skipped.");
-                return null;
+                    Compute.RecordWarning($"The top (SAMP_TOP/SPEC_DPTH) value for {id} is invalid and has been skipped.");
             }
 
             // ContaminantSample

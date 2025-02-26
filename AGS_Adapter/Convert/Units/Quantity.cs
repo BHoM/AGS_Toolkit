@@ -106,7 +106,7 @@ namespace BH.Adapter.AGS
                 case "none":
                     return null;
                 default:
-                    Compute.RecordWarning($"Unit {unit} not recognised, no quantity has been assigned.");
+                    Compute.RecordWarning($"Unit \"{unit}\" not recognised, no quantity has been assigned.");
                     return null;
 
             }

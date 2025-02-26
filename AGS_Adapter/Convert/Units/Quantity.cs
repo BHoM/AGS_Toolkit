@@ -102,7 +102,7 @@ namespace BH.Adapter.AGS
                 case "phunit":
                 case "phunits":
                 case "no":
-                case "no units":
+                case "nounits":
                 case "none":
                     return null;
                 default:

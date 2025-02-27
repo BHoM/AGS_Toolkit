@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using BH.oM.Quantities.Attributes;
+using System.Text.RegularExpressions;
 
 namespace BH.Adapter.AGS
 {
@@ -39,7 +40,7 @@ namespace BH.Adapter.AGS
         public static Type Quantity(string unit, string key = "")
         {
 
-            switch (unit.Trim().ToLower())
+            switch (Regex.Replace(unit, @"\s+", "").ToLower())
             {
                 // Length
                 case "m":
@@ -60,12 +61,16 @@ namespace BH.Adapter.AGS
                 case "μg/kg":
                 case "g/kg":
                 case "kg/kg":
+                case "mass%":
                     return typeof(MassFraction);
                 // Molality
+                case "moles/g":
                 case "mole/g":
                 case "mol/g":
                 case "mole/kg":
+                case "moles/kg":
                 case "mol/kg":
+                case "mmol/kg":
                     return typeof(Molality);
                 //Volume
                 case "l":
@@ -77,8 +82,14 @@ namespace BH.Adapter.AGS
                 case "s":
                     return typeof(Time);
                 // Temperature
-                case "degC":
+                case "degc":
                     return typeof(Temperature);
+                // Electric Conductivity
+                case "s/m":
+                case "s/cm":
+                case "us/cm":
+                case "ms/cm":
+                    return typeof(ElectricConductivity);
                 // Dimensionless
                 case "%":
                 case "%w/w":
@@ -87,10 +98,15 @@ namespace BH.Adapter.AGS
                 case "-":
                 case "--":
                 case "---":
-                case "pH":
+                case "ph":
+                case "phunit":
+                case "phunits":
+                case "no":
+                case "nounits":
+                case "none":
                     return null;
                 default:
-                    Compute.RecordWarning($"Unit {unit} not recognised, no unit conversion has occured for {key}.");
+                    Compute.RecordWarning($"Unit \"{unit}\" not recognised, no quantity has been assigned.");
                     return null;
 
             }

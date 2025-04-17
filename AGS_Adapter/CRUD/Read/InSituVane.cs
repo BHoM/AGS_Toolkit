@@ -30,8 +30,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Ground;
-using BH.Engine.Data;
-
 
 namespace BH.Adapter.AGS
 {
@@ -40,26 +38,24 @@ namespace BH.Adapter.AGS
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-        private List<Borehole> ReadBoreholes(List<string> ids = null)
+
+        private List<InSituVane> ReadInSituVane(List<string> ids = null)
         {
-            string groupKey = "LOCA";
+            string groupKey = "IVAN";
 
             if (!m_Data.ContainsKey(groupKey))
             {
-                Engine.Base.Compute.RecordError($"No data regarding boreholes was found in the file ({groupKey} group).");
-                return new List<Borehole>();
+                Compute.RecordError($"No data regarding in situ vane samples were found in the file ({groupKey} group).");
+                return new List<InSituVane>();
             }
 
             if (!m_Units.ContainsKey(groupKey))
             {
-                Engine.Base.Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
-                return new List<Borehole>();
+                Compute.RecordError($"No units regarding boreholes was found in the file ({groupKey} group).");
+                return new List<InSituVane>();
             }
 
-            List<Stratum> strata = ReadStrata();
-            List<ContaminantSample> contaminantSamples = ReadContaminantSamples();
-            List<InSituVane> inSituVanes = ReadInSituVane();
-            return m_Data[groupKey].Select(data => Convert.FromBorehole(data, m_Units[groupKey], strata, contaminantSamples, inSituVanes)).Where(borehole => borehole != null).ToList();
+            return m_Data[groupKey].Select(data => Convert.FromInSituVane(data, m_Units[groupKey])).Where(test => test != null).ToList();
         }
 
         /***************************************************/

@@ -41,7 +41,7 @@ namespace BH.Adapter.AGS
         /***************************************************/
 
         public static Borehole FromBorehole(Dictionary<string, string> data, Dictionary<string, string> units, List<Stratum> strata,
-            List<ContaminantSample> contaminantSamples)
+            List<ContaminantSample> contaminantSamples, List<InSituVane>inSituVanes)
         {
             string id = GetString(data, "LOCA_ID");
 
@@ -95,6 +95,7 @@ namespace BH.Adapter.AGS
 
             List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
             List<ContaminantSample> boreholeContaminants = contaminantSamples.Where(x => x.Id == id).ToList();
+            List<InSituVane> boreholeInSituVane = inSituVanes.Where(x => x.Id == id).ToList();
 
             List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
 

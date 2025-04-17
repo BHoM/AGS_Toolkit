@@ -106,6 +106,11 @@ namespace BH.Adapter.AGS
                     return value.FromSiemensPerCentimetre()*Math.Pow(10,-6);
                 case "ms/cm":
                     return value.FromSiemensPerCentimetre() * Math.Pow(10, -3); ;
+                // Pressure
+                case "kPa":
+                case "kpa":
+                case "KPA":
+                    return value.FromKilonewtonPerSquareMetre();
                 // Dimensionless
                 case "%":
                 case "%w/w":

@@ -41,7 +41,7 @@ namespace BH.Adapter.AGS
         /***************************************************/
 
         public static Borehole FromBorehole(Dictionary<string, string> data, Dictionary<string, string> units, List<Stratum> strata,
-            List<ContaminantSample> contaminantSamples, List<InSituVane>inSituVanes)
+            List<ContaminantSample> contaminantSamples, List<InSituVane> inSituVanes)
         {
             string id = GetString(data, "LOCA_ID");
 
@@ -146,6 +146,17 @@ namespace BH.Adapter.AGS
                 boreholeProperties.Add(boreholeReference);
 
             Borehole borehole = Engine.Ground.Create.Borehole(id, top, bottom, null, boreholeProperties, boreholeStrata, boreholeContaminants);
+
+            Borehole borehole1 = new Borehole()
+            {
+                Id = id,
+                Top = top,
+                Bottom = bottom,
+                BoreholeProperties = boreholeProperties,
+                Strata = boreholeStrata,
+                ContaminantSamples = boreholeContaminants,
+                GeotechnicalTestResults = new List<ITest>(boreholeInSituVane)
+            };
 
             return borehole;
 

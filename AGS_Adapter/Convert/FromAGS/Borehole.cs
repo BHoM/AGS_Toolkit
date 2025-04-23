@@ -145,9 +145,7 @@ namespace BH.Adapter.AGS
             if (boreholeReference != null)
                 boreholeProperties.Add(boreholeReference);
 
-            Borehole borehole = Engine.Ground.Create.Borehole(id, top, bottom, null, boreholeProperties, boreholeStrata, boreholeContaminants);
-
-            Borehole borehole1 = new Borehole()
+            Borehole borehole = new Borehole()
             {
                 Id = id,
                 Top = top,

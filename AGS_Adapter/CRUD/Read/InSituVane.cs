@@ -39,7 +39,7 @@ namespace BH.Adapter.AGS
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private List<InSituVane> ReadInSituVane(List<string> ids = null)
+        private List<InSituVane> ReadInSituVanes(List<string> ids = null)
         {
             string groupKey = "IVAN";
 

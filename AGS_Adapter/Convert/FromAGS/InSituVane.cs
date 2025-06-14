@@ -71,7 +71,7 @@ namespace BH.Adapter.AGS
 
             // InSituVane Test Properties
             string testReference = GetString(data, "IVAN_TESN");
-            string type = GetString(data, "IVAN_TYPE)");
+            string type = GetString(data, "IVAN_TYPE");
             string tester = GetString(data, "IVAN_CONT"); 
             string testMethod = GetString(data, "IVAN_METH");
             string accreditingBody = GetString(data, "IVAN_CRED");

@@ -94,7 +94,7 @@ namespace BH.Adapter.AGS
             double vaneResidualResult = GetDouble(data, units, "IVAN_IVAR");
 
 
-            InSituVaneResultProperties InSituVaneResultProperties = new InSituVaneResultProperties()
+            InSituVaneResultProperties inSituVaneResultProperties = new InSituVaneResultProperties()
             {
                 VaneResidualResult = vaneresidualresult
             };

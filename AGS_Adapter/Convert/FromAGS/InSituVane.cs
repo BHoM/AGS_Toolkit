@@ -54,8 +54,8 @@ namespace BH.Adapter.AGS
             // InSituVane Reference
             string details = GetString(data, "IVAN_REM");
             string weather = GetString(data, "IVAN_ENV");
-            DateTime testdate = GetDateTime(data, units, "IVAN_DATE");
-            string stratumreference = GetString(data, "GEOL_STAT");
+            DateTime testDate = GetDateTime(data, units, "IVAN_DATE");
+            string stratumReference = GetString(data, "GEOL_STAT");
             string files = GetString(data, "FILE_FSET");
 
             InSituVaneReferenceProperties InSituVaneReferenceProperties = new InSituVaneReferenceProperties() 

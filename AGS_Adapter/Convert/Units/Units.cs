@@ -123,6 +123,7 @@ namespace BH.Adapter.AGS
                 case "no":
                 case "nounits":
                 case "none":
+                case "type":
                     return value;
                 default:
                     Compute.RecordWarning($"Unit \"{unit}\" not recognised, no unit conversion has occured for {key}.");

@@ -86,6 +86,7 @@ namespace BH.Adapter.AGS
                 AccreditingBody = accreditingbody,
                 Status = testStatus
             };
+            
             if (InSituVaneTestProperties != null)
                 testProperties.Add(InSituVaneTestProperties);
 

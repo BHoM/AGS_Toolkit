@@ -58,7 +58,14 @@ namespace BH.Adapter.AGS
             string stratumreference = GetString(data, "GEOL_STAT");
             string files = GetString(data, "FILE_FSET");
 
-            InSituVaneReferenceProperties InSituVaneReferenceProperties = new InSituVaneReferenceProperties() { Details = details, Weather = weather, Date = testdate, StratumReference = stratumreference, FileReference = files };
+            InSituVaneReferenceProperties InSituVaneReferenceProperties = new InSituVaneReferenceProperties() 
+            { 
+                Details = details, 
+                Weather = weather, Date = testdate, 
+                StratumReference = stratumreference, 
+                FileReference = files 
+            };
+
             if (InSituVaneReferenceProperties != null)
                 testProperties.Add(InSituVaneReferenceProperties);
 

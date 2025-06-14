@@ -49,7 +49,7 @@ namespace BH.Adapter.AGS
             if (type == typeof(ContaminantSample))
                 return ReadContaminantSamples();
             if (type == typeof(InSituVane))
-                return ReadInSituVane();
+                return ReadInSituVanes();
 
             return new List<IBHoMObject>();
         }

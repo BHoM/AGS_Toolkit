@@ -61,8 +61,8 @@ namespace BH.Adapter.AGS
             InSituVaneReferenceProperties InSituVaneReferenceProperties = new InSituVaneReferenceProperties() 
             { 
                 Details = details, 
-                Weather = weather, Date = testdate, 
-                StratumReference = stratumreference, 
+                Weather = weather, Date = testDate, 
+                StratumReference = stratumReference, 
                 FileReference = files 
             };
 
@@ -81,9 +81,9 @@ namespace BH.Adapter.AGS
             {
                 Reference = testReference,
                 Type = type,
-                Method = testmethod,
+                Method = testMethod,
                 Tester = tester,
-                AccreditingBody = accreditingbody,
+                AccreditingBody = accreditingBody,
                 Status = testStatus
             };
             
@@ -96,10 +96,10 @@ namespace BH.Adapter.AGS
 
             InSituVaneResultProperties inSituVaneResultProperties = new InSituVaneResultProperties()
             {
-                VaneResidualResult = vaneresidualresult
+                VaneResidualResult = vaneResidualResult
             };
-            if (InSituVaneResultProperties != null)
-                testProperties.Add(InSituVaneResultProperties);
+            if (inSituVaneResultProperties != null)
+                testProperties.Add(inSituVaneResultProperties);
 
             InSituVane inSituVane = new InSituVane
             {

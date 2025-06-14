@@ -58,7 +58,7 @@ namespace BH.Adapter.AGS
 
             List<Stratum> strata = ReadStrata();
             List<ContaminantSample> contaminantSamples = ReadContaminantSamples();
-            List<InSituVane> inSituVanes = ReadInSituVane();
+            List<InSituVane> inSituVanes = ReadInSituVanes();
             return m_Data[groupKey].Select(data => Convert.FromBorehole(data, m_Units[groupKey], strata, contaminantSamples, inSituVanes)).Where(borehole => borehole != null).ToList();
         }
 

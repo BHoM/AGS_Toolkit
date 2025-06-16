@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using BH.Engine.Base;
 
 namespace BH.Adapter.AGS
@@ -61,6 +62,7 @@ namespace BH.Adapter.AGS
             }
             else
             {
+                format = Regex.Replace(format, @"(?<!M)m{2}(?!m)", "MM"); // this is to ensure mm becomes MM (mm format is for minutes)
                 if (!DateTime.TryParseExact(text, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                     date = default(DateTime);
             }

@@ -106,6 +106,9 @@ namespace BH.Adapter.AGS
                     return value.FromSiemensPerCentimetre()*Math.Pow(10,-6);
                 case "ms/cm":
                     return value.FromSiemensPerCentimetre() * Math.Pow(10, -3); ;
+                // Pressure
+                case "kpa":
+                    return value.FromKilonewtonPerSquareMetre();
                 // Dimensionless
                 case "%":
                 case "%w/w":
@@ -120,6 +123,7 @@ namespace BH.Adapter.AGS
                 case "no":
                 case "nounits":
                 case "none":
+                case "type":
                     return value;
                 default:
                     Compute.RecordWarning($"Unit \"{unit}\" not recognised, no unit conversion has occured for {key}.");

@@ -48,6 +48,8 @@ namespace BH.Adapter.AGS
                 return ReadStrata();
             if (type == typeof(ContaminantSample))
                 return ReadContaminantSamples();
+            if (type == typeof(InSituVane))
+                return ReadInSituVanes();
 
             return new List<IBHoMObject>();
         }

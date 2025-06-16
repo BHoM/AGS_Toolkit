@@ -37,10 +37,10 @@ namespace BH.Adapter.AGS
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static Type Quantity(string unit, string key = "")
+        public static Type Quantity(string quantity, string key = "")
         {
 
-            switch (Regex.Replace(unit, @"\s+", "").ToLower())
+            switch (Regex.Replace(quantity, @"\s+", "").ToLower())
             {
                 // Length
                 case "m":
@@ -104,9 +104,10 @@ namespace BH.Adapter.AGS
                 case "no":
                 case "nounits":
                 case "none":
+                case "type":
                     return null;
                 default:
-                    Compute.RecordWarning($"Unit \"{unit}\" not recognised, no quantity has been assigned.");
+                    Compute.RecordWarning($"Quantity \"{quantity}\" not recognised, no quantity has been assigned.");
                     return null;
 
             }

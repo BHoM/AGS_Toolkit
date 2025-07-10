@@ -9,7 +9,7 @@
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Adapters.AGS</RootNamespace>
-    <FileVersion>8.2.0.0</FileVersion>
+    <FileVersion>8.3.0.0</FileVersion>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 

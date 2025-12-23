@@ -9,7 +9,7 @@
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.oM.AGS</RootNamespace>
-    <FileVersion>9.0.0.0</FileVersion>
+    <FileVersion>9.1.0.0</FileVersion>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 

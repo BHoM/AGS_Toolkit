@@ -41,7 +41,8 @@ namespace BH.Adapter.AGS
         /***************************************************/
 
         public static Borehole FromBorehole(Dictionary<string, string> data, Dictionary<string, string> units, List<Stratum> strata,
-            List<ContaminantSample> contaminantSamples, List<InSituVane> inSituVanes)
+            List<ContaminantSample> contaminantSamples, List<InSituVane> inSituVanes, List<WaterStrike> waterStrikes,
+            List<SPT> spTs, List<Triaxial> triaxials)
         {
             string id = GetString(data, "LOCA_ID");
 
@@ -96,6 +97,9 @@ namespace BH.Adapter.AGS
             List<Stratum> boreholeStrata = strata.Where(x => x.Id == id).ToList();
             List<ContaminantSample> boreholeContaminants = contaminantSamples.Where(x => x.Id == id).ToList();
             List<InSituVane> boreholeInSituVane = inSituVanes.Where(x => x.Id == id).ToList();
+            List<WaterStrike> boreholeWaterStrikes = waterStrikes.Where(x => x.Id == id).ToList();
+            List<SPT> boreholeSPTs = spTs.Where(x => x.Id == id).ToList();
+            List<Triaxial> boreholeTriaxials = triaxials.Where(x => x.Id == id).ToList();
 
             List<IBoreholeProperty> boreholeProperties = new List<IBoreholeProperty>();
 
@@ -153,7 +157,8 @@ namespace BH.Adapter.AGS
                 BoreholeProperties = boreholeProperties,
                 Strata = boreholeStrata,
                 ContaminantSamples = boreholeContaminants,
-                GeotechnicalTestResults = new List<ITest>(boreholeInSituVane)
+                GeotechnicalTestResults = new List<ITest>(boreholeInSituVane).Concat(boreholeSPTs).Concat(boreholeTriaxials).ToList(),
+                WaterStrikeResults = boreholeWaterStrikes
             };
 
             return borehole;

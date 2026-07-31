@@ -104,12 +104,14 @@ namespace BH.Adapter.AGS
             double penetrationTest2 = GetDouble(data, units, "ISPT_PEN4");
             double penetrationTest3 = GetDouble(data, units, "ISPT_PEN5");
             double penetrationTest4 = GetDouble(data, units, "ISPT_PEN6");
+            double sptN60 = Engine.Ground.Compute.N60(numberOfBlows, energyRatio);
 
             SPTResultProperties sptResultProperties = new SPTResultProperties()
             {
                 ReportedResult = reportedResult,
                 SeatingDriveBlows = seatingDriveBlows,
                 MainTestDriveBlows = mainTestDriveBlows,
+                SPTN60 = sptN60,
                 TotalPenetration = totalPenetration,
                 SelfWeightPenetration = selfWeightPenetration,
                 SeatBlows1 = seatBlows1,

@@ -94,6 +94,8 @@ namespace BH.Adapter.AGS
                 // Time
                 case "s":
                     return value;
+                case "min":
+                    return value.FromMinute();
                 // Temperature
                 case "degc":
                     return value.FromDegreeCelsius();
@@ -109,6 +111,10 @@ namespace BH.Adapter.AGS
                 // Pressure
                 case "kpa":
                     return value.FromKilonewtonPerSquareMetre();
+                // Bulk Density — "mg/m3" here represents "Mg/m3" (Megagrams, not milligrams); 1 Mg/m³ = 1 t/m³ = 1000 kg/m³
+                case "mg/m3":
+                case "t/m3":
+                    return value.FromTonnePerCubicMetre();
                 // Dimensionless
                 case "%":
                 case "%w/w":

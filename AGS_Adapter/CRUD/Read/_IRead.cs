@@ -50,6 +50,12 @@ namespace BH.Adapter.AGS
                 return ReadContaminantSamples();
             if (type == typeof(InSituVane))
                 return ReadInSituVanes();
+            if (type == typeof(WaterStrike))
+                return ReadWaterStrikes();
+            if (type == typeof(SPT))
+                return ReadSPTs();
+            if (type == typeof(Triaxial))
+                return ReadTriaxials();
 
             return new List<IBHoMObject>();
         }
